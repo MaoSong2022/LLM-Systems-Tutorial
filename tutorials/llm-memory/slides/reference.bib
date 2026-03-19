@@ -1,0 +1,286 @@
+@misc{dao2022flashattentionfastmemoryefficientexact,
+      title={FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness}, 
+      author={Tri Dao and Daniel Y. Fu and Stefano Ermon and Atri Rudra and Christopher Ré},
+      year={2022},
+      eprint={2205.14135},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2205.14135}, 
+}
+
+@misc{tensorrt-llm2023,
+  title = {{TensorRT-LLM}: A {TensorRT} Toolset for Optimizing {LLM} Inference},
+  author = {NVIDIA Corporation},
+  year = {2023},
+  howpublished = {\url{https://github.com/NVIDIA/TensorRT-LLM}},
+}
+
+@inproceedings{sglang2024efficientexecutionofstructuredlanguagemodelprograms,
+author = {Zheng, Lianmin and Yin, Liangsheng and Xie, Zhiqiang and Sun, Chuyue and Huang, Jeff and Yu, Cody Hao and Cao, Shiyi and Kozyrakis, Christos and Stoica, Ion and Gonzalez, Joseph E. and Barrett, Clark and Sheng, Ying},
+title = {SGLang: efficient execution of structured language model programs},
+year = {2024},
+isbn = {9798331314385},
+publisher = {Curran Associates Inc.},
+address = {Red Hook, NY, USA},
+abstract = {Large language models (LLMs) are increasingly used for complex tasks that require multiple generation calls, advanced prompting techniques, control flow, and structured inputs/outputs. However, efficient systems are lacking for programming and executing these applications. We introduce SGLang, a system for efficient execution of complex language model programs. SGLang consists of a frontend language and a runtime. The frontend simplifies programming with primitives for generation and parallelism control. The runtime accelerates execution with novel optimizations like RadixAttention for KV cache reuse and compressed finite state machines for faster structured output decoding. Experiments show that SGLang achieves up to 6.4\texttimes{} higher throughput compared to state-of-the-art inference systems on various large language and multi-modal models on tasks including agent control, logical reasoning, few-shot learning benchmarks, JSON decoding, retrieval-augmented generation pipelines, and multi-turn chat. The code is publicly available at https://github.com/sgl-project/sglang.},
+booktitle = {Proceedings of the 38th International Conference on Neural Information Processing Systems},
+articleno = {2000},
+numpages = {27},
+location = {Vancouver, BC, Canada},
+series = {NIPS '24}
+}
+
+@inproceedings{colossalai2023aunifieddeeplearningsystemforlargescaleparalleltraining,
+author = {Li, Shenggui and Liu, Hongxin and Bian, Zhengda and Fang, Jiarui and Huang, Haichen and Liu, Yuliang and Wang, Boxiang and You, Yang},
+title = {Colossal-AI: A Unified Deep Learning System For Large-Scale Parallel Training},
+year = {2023},
+isbn = {9798400708435},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3605573.3605613},
+doi = {10.1145/3605573.3605613},
+abstract = {The success of Transformer models has pushed the deep learning model scale to billions of parameters, but the memory limitation of a single GPU has led to an urgent need for training on multi-GPU clusters. However, the best practice for choosing the optimal parallel strategy is still lacking, as it requires domain expertise in both deep learning and parallel computing. The Colossal-AI system addressed the above challenge by introducing a unified interface to scale your sequential code of model training to distributed environments. It supports parallel training methods such as data, pipeline, tensor, and sequence parallelism and is integrated with heterogeneous training and zero redundancy optimizer. Compared to the baseline system, Colossal-AI can achieve up to 2.76 times training speedup on large-scale models.},
+booktitle = {Proceedings of the 52nd International Conference on Parallel Processing},
+pages = {766–775},
+numpages = {10},
+keywords = {datasets, gaze detection, text tagging, neural networks},
+location = {Salt Lake City, UT, USA},
+series = {ICPP '23}
+}
+
+@inproceedings{deepspeed2020systemoptimizationsenabletrainingdeeplearningmodelswithover100billionparameters,
+author = {Rasley, Jeff and Rajbhandari, Samyam and Ruwase, Olatunji and He, Yuxiong},
+title = {DeepSpeed: System Optimizations Enable Training Deep Learning Models with Over 100 Billion Parameters},
+year = {2020},
+isbn = {9781450379984},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3394486.3406703},
+doi = {10.1145/3394486.3406703},
+abstract = {Explore new techniques in Microsoft's open source library called DeepSpeed, which advances large model training by improving scale, speed, cost, and usability, unlocking the ability to train 100-billion-parameter models. DeepSpeed is compatible with PyTorch. One piece of our library, called ZeRO, is a new parallelized optimizer that greatly reduces the resources needed for model and data parallelism while massively increasing the number of parameters that can be trained. Researchers have used these breakthroughs to create Turing Natural Language Generation (Turing-NLG), which at the time of its release was the largest publicly known language model at 17 billion parameters. In addition we will also go over our latest transformer kernel advancements that led the DeepSpeed team to achieve the world fastest BERT pretraining record.The Zero Redundancy Optimizer (ZeRO) is a novel memory optimization technology for large-scale distributed deep learning. ZeRO can train deep learning models with over 100 billion parameters on the current generation of GPU clusters at three to five times the throughput of the current best system. It also presents a clear path to training models with trillions of parameters, demonstrating an unprecedented leap in deep learning system technology.DeepSpeed brings state-of-the-art training techniques, such as ZeRO, optimized kernels, distributed training, mixed precision, and checkpointing, through lightweight APIs compatible with PyTorch. With just a few lines of code changes to your PyTorch model, you can leverage DeepSpeed to address underlying performance challenges and boost the speed and scale of your training.},
+booktitle = {Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining},
+pages = {3505–3506},
+numpages = {2},
+keywords = {distributed deep learning, machine learning},
+location = {Virtual Event, CA, USA},
+series = {KDD '20}
+}
+
+@misc{sheng2023flexgenhighthroughputgenerativeinference,
+      title={FlexGen: High-Throughput Generative Inference of Large Language Models with a Single GPU}, 
+      author={Ying Sheng and Lianmin Zheng and Binhang Yuan and Zhuohan Li and Max Ryabinin and Daniel Y. Fu and Zhiqiang Xie and Beidi Chen and Clark Barrett and Joseph E. Gonzalez and Percy Liang and Christopher Ré and Ion Stoica and Ce Zhang},
+      year={2023},
+      eprint={2303.06865},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2303.06865}, 
+}
+
+@inproceedings{kwon2023efficient,
+  title={Efficient Memory Management for Large Language Model Serving with PagedAttention},
+  author={Woosuk Kwon and Zhuohan Li and Siyuan Zhuang and Ying Sheng and Lianmin Zheng and Cody Hao Yu and Joseph E. Gonzalez and Hao Zhang and Ion Stoica},
+  booktitle={Proceedings of the ACM SIGOPS 29th Symposium on Operating Systems Principles},
+  year={2023}
+}
+
+@misc{ren2021zerooffloaddemocratizingbillionscalemodel,
+      title={ZeRO-Offload: Democratizing Billion-Scale Model Training}, 
+      author={Jie Ren and Samyam Rajbhandari and Reza Yazdani Aminabadi and Olatunji Ruwase and Shuangyan Yang and Minjia Zhang and Dong Li and Yuxiong He},
+      year={2021},
+      eprint={2101.06840},
+      archivePrefix={arXiv},
+      primaryClass={cs.DC},
+      url={https://arxiv.org/abs/2101.06840}, 
+}
+
+@misc{zhao2023pytorchfsdpexperiencesscaling,
+      title={PyTorch FSDP: Experiences on Scaling Fully Sharded Data Parallel}, 
+      author={Yanli Zhao and Andrew Gu and Rohan Varma and Liang Luo and Chien-Chin Huang and Min Xu and Less Wright and Hamid Shojanazeri and Myle Ott and Sam Shleifer and Alban Desmaison and Can Balioglu and Pritam Damania and Bernard Nguyen and Geeta Chauhan and Yuchen Hao and Ajit Mathews and Shen Li},
+      year={2023},
+      eprint={2304.11277},
+      archivePrefix={arXiv},
+      primaryClass={cs.DC},
+      url={https://arxiv.org/abs/2304.11277}, 
+}
+
+@misc{rajbhandari2022deepspeedmoeadvancingmixtureofexpertsinference,
+      title={DeepSpeed-MoE: Advancing Mixture-of-Experts Inference and Training to Power Next-Generation AI Scale}, 
+      author={Samyam Rajbhandari and Conglong Li and Zhewei Yao and Minjia Zhang and Reza Yazdani Aminabadi and Ammar Ahmad Awan and Jeff Rasley and Yuxiong He},
+      year={2022},
+      eprint={2201.05596},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2201.05596}, 
+}
+
+@inproceedings{KTransformers,
+  title = {KTransformers: Unleashing the Full Potential of CPU/GPU Hybrid Inference for MoE Models},
+  author = {Chen, Hongtao and Xie, Weiyu and Zhang, Boxin and Tang, Jingqi and Wang, Jiahao and Dong, Jianwei and Chen, Shaoyuan and Yuan, Ziwei and Lin, Chen and Qiu, Chengyu and Zhu, Yuening and Ou, Qingliang and Liao, Jiaqi and Chen, Xianglin and Ai, Zhiyuan and Wu, Yongwei and Zhang, Mingxing},
+  booktitle = {Proceedings of the ACM SIGOPS 31st Symposium on Operating Systems Principles},
+  year = {2025}
+}
+
+@misc{kim2023memoryefficientfinetuningcompressedlarge,
+      title={Memory-Efficient Fine-Tuning of Compressed Large Language Models via sub-4-bit Integer Quantization}, 
+      author={Jeonghoon Kim and Jung Hyun Lee and Sungdong Kim and Joonsuk Park and Kang Min Yoo and Se Jung Kwon and Dongsoo Lee},
+      year={2023},
+      eprint={2305.14152},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2305.14152}, 
+}
+
+@misc{liu2023llmqatdatafreequantizationaware,
+      title={LLM-QAT: Data-Free Quantization Aware Training for Large Language Models}, 
+      author={Zechun Liu and Barlas Oguz and Changsheng Zhao and Ernie Chang and Pierre Stock and Yashar Mehdad and Yangyang Shi and Raghuraman Krishnamoorthi and Vikas Chandra},
+      year={2023},
+      eprint={2305.17888},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2305.17888}, 
+}
+
+@misc{ggerganov2023ggml,
+  title = {{ggml}: {Tensor} library for machine learning},
+  author = {Gerganov, Georgi},
+  year = {2023},
+  howpublished = {\url{https://github.com/ggerganov/ggml}},
+}
+
+@misc{xiao2024smoothquantaccurateefficientposttraining,
+      title={SmoothQuant: Accurate and Efficient Post-Training Quantization for Large Language Models}, 
+      author={Guangxuan Xiao and Ji Lin and Mickael Seznec and Hao Wu and Julien Demouth and Song Han},
+      year={2024},
+      eprint={2211.10438},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2211.10438}, 
+}
+
+@misc{lin2024awqactivationawareweightquantization,
+      title={AWQ: Activation-aware Weight Quantization for LLM Compression and Acceleration}, 
+      author={Ji Lin and Jiaming Tang and Haotian Tang and Shang Yang and Wei-Ming Chen and Wei-Chen Wang and Guangxuan Xiao and Xingyu Dang and Chuang Gan and Song Han},
+      year={2024},
+      eprint={2306.00978},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2306.00978}, 
+}
+
+@misc{shazeer2019fasttransformerdecodingwritehead,
+      title={Fast Transformer Decoding: One Write-Head is All You Need}, 
+      author={Noam Shazeer},
+      year={2019},
+      eprint={1911.02150},
+      archivePrefix={arXiv},
+      primaryClass={cs.NE},
+      url={https://arxiv.org/abs/1911.02150}, 
+}
+
+@misc{frantar2023gptqaccurateposttrainingquantization,
+      title={GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers}, 
+      author={Elias Frantar and Saleh Ashkboos and Torsten Hoefler and Dan Alistarh},
+      year={2023},
+      eprint={2210.17323},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2210.17323}, 
+}
+
+@misc{ainslie2023gqatraininggeneralizedmultiquery,
+      title={GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints}, 
+      author={Joshua Ainslie and James Lee-Thorp and Michiel de Jong and Yury Zemlyanskiy and Federico Lebrón and Sumit Sanghai},
+      year={2023},
+      eprint={2305.13245},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2305.13245}, 
+}
+
+@misc{deepseekai2024deepseekv2strongeconomicalefficient,
+      title={DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model}, 
+      author={DeepSeek-AI and Aixin Liu and Bei Feng and Bin Wang and Bingxuan Wang and Bo Liu and Chenggang Zhao and Chengqi Dengr and Chong Ruan and Damai Dai and Daya Guo and Dejian Yang and Deli Chen and Dongjie Ji and Erhang Li and Fangyun Lin and Fuli Luo and Guangbo Hao and Guanting Chen and Guowei Li and H. Zhang and Hanwei Xu and Hao Yang and Haowei Zhang and Honghui Ding and Huajian Xin and Huazuo Gao and Hui Li and Hui Qu and J. L. Cai and Jian Liang and Jianzhong Guo and Jiaqi Ni and Jiashi Li and Jin Chen and Jingyang Yuan and Junjie Qiu and Junxiao Song and Kai Dong and Kaige Gao and Kang Guan and Lean Wang and Lecong Zhang and Lei Xu and Leyi Xia and Liang Zhao and Liyue Zhang and Meng Li and Miaojun Wang and Mingchuan Zhang and Minghua Zhang and Minghui Tang and Mingming Li and Ning Tian and Panpan Huang and Peiyi Wang and Peng Zhang and Qihao Zhu and Qinyu Chen and Qiushi Du and R. J. Chen and R. L. Jin and Ruiqi Ge and Ruizhe Pan and Runxin Xu and Ruyi Chen and S. S. Li and Shanghao Lu and Shangyan Zhou and Shanhuang Chen and Shaoqing Wu and Shengfeng Ye and Shirong Ma and Shiyu Wang and Shuang Zhou and Shuiping Yu and Shunfeng Zhou and Size Zheng and T. Wang and Tian Pei and Tian Yuan and Tianyu Sun and W. L. Xiao and Wangding Zeng and Wei An and Wen Liu and Wenfeng Liang and Wenjun Gao and Wentao Zhang and X. Q. Li and Xiangyue Jin and Xianzu Wang and Xiao Bi and Xiaodong Liu and Xiaohan Wang and Xiaojin Shen and Xiaokang Chen and Xiaosha Chen and Xiaotao Nie and Xiaowen Sun and Xiaoxiang Wang and Xin Liu and Xin Xie and Xingkai Yu and Xinnan Song and Xinyi Zhou and Xinyu Yang and Xuan Lu and Xuecheng Su and Y. Wu and Y. K. Li and Y. X. Wei and Y. X. Zhu and Yanhong Xu and Yanping Huang and Yao Li and Yao Zhao and Yaofeng Sun and Yaohui Li and Yaohui Wang and Yi Zheng and Yichao Zhang and Yiliang Xiong and Yilong Zhao and Ying He and Ying Tang and Yishi Piao and Yixin Dong and Yixuan Tan and Yiyuan Liu and Yongji Wang and Yongqiang Guo and Yuchen Zhu and Yuduan Wang and Yuheng Zou and Yukun Zha and Yunxian Ma and Yuting Yan and Yuxiang You and Yuxuan Liu and Z. Z. Ren and Zehui Ren and Zhangli Sha and Zhe Fu and Zhen Huang and Zhen Zhang and Zhenda Xie and Zhewen Hao and Zhihong Shao and Zhiniu Wen and Zhipeng Xu and Zhongyu Zhang and Zhuoshu Li and Zihan Wang and Zihui Gu and Zilin Li and Ziwei Xie},
+      year={2024},
+      eprint={2405.04434},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2405.04434}, 
+}
+
+@misc{li2025surveylargelanguagemodel,
+      title={A Survey on Large Language Model Acceleration based on KV Cache Management}, 
+      author={Haoyang Li and Yiming Li and Anxin Tian and Tianhao Tang and Zhanchao Xu and Xuejia Chen and Nicole Hu and Wei Dong and Qing Li and Lei Chen},
+      year={2025},
+      eprint={2412.19442},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2412.19442}, 
+}
+
+
+@misc{korthikanti_reducing_2022,
+	title = {Reducing activation recomputation in large transformer models},
+	url = {http://arxiv.org/abs/2205.05198},
+	doi = {10.48550/arXiv.2205.05198},
+	abstract = {Training large transformer models is one of the most important computational challenges of modern AI. In this paper, we show how to significantly accelerate training of large transformer models by reducing activation recomputation. Activation recomputation is commonly used to work around memory capacity constraints. Rather than storing activations for backpropagation, they are traditionally recomputed, which saves memory but adds redundant compute. In this work, we show most of this redundant compute is unnecessary because we can reduce memory consumption sufficiently without it. We present two novel yet very simple techniques: sequence parallelism and selective activation recomputation. In conjunction with tensor parallelism, these techniques almost eliminate the need to recompute activations. We evaluate our approach on language models up to one trillion parameters in scale and show that our method reduces activation memory by 5x, while reducing execution time overhead from activation recomputation by over 90\%. For example, when training a 530B parameter GPT-3 style model on 2240 NVIDIA A100 GPUs, we achieve a Model Flops Utilization of 54.2\%, which is 29\% faster than the 42.1\% we achieve using recomputation. Our implementation will be available in both Megatron-LM and NeMo-Megatron.},
+	language = {en},
+	urldate = {2026-03-03},
+	publisher = {arXiv},
+	author = {Korthikanti, Vijay and Casper, Jared and Lym, Sangkug and McAfee, Lawrence and Andersch, Michael and Shoeybi, Mohammad and Catanzaro, Bryan},
+	month = may,
+	year = {2022},
+	note = {arXiv:2205.05198 [cs]},
+	keywords = {Computer Science - Computation and Language, Computer Science - Machine Learning},
+	file = {Full Text PDF:/home/maosong/Zotero/storage/MY2LNB2K/Korthikanti et al. - 2022 - Reducing activation recomputation in large transformer models.pdf:application/pdf;Snapshot:/home/maosong/Zotero/storage/F6JHI7FF/2205.html:text/html},
+}
+
+@misc{shoeybi2020megatronlmtrainingmultibillionparameter,
+      title={Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism}, 
+      author={Mohammad Shoeybi and Mostofa Patwary and Raul Puri and Patrick LeGresley and Jared Casper and Bryan Catanzaro},
+      year={2020},
+      eprint={1909.08053},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/1909.08053}, 
+}
+
+@misc{rajbhandari2020zeromemoryoptimizationstraining,
+      title={ZeRO: Memory Optimizations Toward Training Trillion Parameter Models}, 
+      author={Samyam Rajbhandari and Jeff Rasley and Olatunji Ruwase and Yuxiong He},
+      year={2020},
+      eprint={1910.02054},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/1910.02054}, 
+}
+
+@misc{loshchilov2019decoupledweightdecayregularization,
+      title={Decoupled Weight Decay Regularization}, 
+      author={Ilya Loshchilov and Frank Hutter},
+      year={2019},
+      eprint={1711.05101},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/1711.05101}, 
+}
+
+@misc{deepseekai2025deepseekv3technicalreport,
+      title={DeepSeek-V3 Technical Report}, 
+      author={DeepSeek-AI and Aixin Liu and Bei Feng and Bing Xue and Bingxuan Wang and Bochao Wu and Chengda Lu and Chenggang Zhao and Chengqi Deng and Chenyu Zhang and Chong Ruan and Damai Dai and Daya Guo and Dejian Yang and Deli Chen and Dongjie Ji and Erhang Li and Fangyun Lin and Fucong Dai and Fuli Luo and Guangbo Hao and Guanting Chen and Guowei Li and H. Zhang and Han Bao and Hanwei Xu and Haocheng Wang and Haowei Zhang and Honghui Ding and Huajian Xin and Huazuo Gao and Hui Li and Hui Qu and J. L. Cai and Jian Liang and Jianzhong Guo and Jiaqi Ni and Jiashi Li and Jiawei Wang and Jin Chen and Jingchang Chen and Jingyang Yuan and Junjie Qiu and Junlong Li and Junxiao Song and Kai Dong and Kai Hu and Kaige Gao and Kang Guan and Kexin Huang and Kuai Yu and Lean Wang and Lecong Zhang and Lei Xu and Leyi Xia and Liang Zhao and Litong Wang and Liyue Zhang and Meng Li and Miaojun Wang and Mingchuan Zhang and Minghua Zhang and Minghui Tang and Mingming Li and Ning Tian and Panpan Huang and Peiyi Wang and Peng Zhang and Qiancheng Wang and Qihao Zhu and Qinyu Chen and Qiushi Du and R. J. Chen and R. L. Jin and Ruiqi Ge and Ruisong Zhang and Ruizhe Pan and Runji Wang and Runxin Xu and Ruoyu Zhang and Ruyi Chen and S. S. Li and Shanghao Lu and Shangyan Zhou and Shanhuang Chen and Shaoqing Wu and Shengfeng Ye and Shengfeng Ye and Shirong Ma and Shiyu Wang and Shuang Zhou and Shuiping Yu and Shunfeng Zhou and Shuting Pan and T. Wang and Tao Yun and Tian Pei and Tianyu Sun and W. L. Xiao and Wangding Zeng and Wanjia Zhao and Wei An and Wen Liu and Wenfeng Liang and Wenjun Gao and Wenqin Yu and Wentao Zhang and X. Q. Li and Xiangyue Jin and Xianzu Wang and Xiao Bi and Xiaodong Liu and Xiaohan Wang and Xiaojin Shen and Xiaokang Chen and Xiaokang Zhang and Xiaosha Chen and Xiaotao Nie and Xiaowen Sun and Xiaoxiang Wang and Xin Cheng and Xin Liu and Xin Xie and Xingchao Liu and Xingkai Yu and Xinnan Song and Xinxia Shan and Xinyi Zhou and Xinyu Yang and Xinyuan Li and Xuecheng Su and Xuheng Lin and Y. K. Li and Y. Q. Wang and Y. X. Wei and Y. X. Zhu and Yang Zhang and Yanhong Xu and Yanhong Xu and Yanping Huang and Yao Li and Yao Zhao and Yaofeng Sun and Yaohui Li and Yaohui Wang and Yi Yu and Yi Zheng and Yichao Zhang and Yifan Shi and Yiliang Xiong and Ying He and Ying Tang and Yishi Piao and Yisong Wang and Yixuan Tan and Yiyang Ma and Yiyuan Liu and Yongqiang Guo and Yu Wu and Yuan Ou and Yuchen Zhu and Yuduan Wang and Yue Gong and Yuheng Zou and Yujia He and Yukun Zha and Yunfan Xiong and Yunxian Ma and Yuting Yan and Yuxiang Luo and Yuxiang You and Yuxuan Liu and Yuyang Zhou and Z. F. Wu and Z. Z. Ren and Zehui Ren and Zhangli Sha and Zhe Fu and Zhean Xu and Zhen Huang and Zhen Zhang and Zhenda Xie and Zhengyan Zhang and Zhewen Hao and Zhibin Gou and Zhicheng Ma and Zhigang Yan and Zhihong Shao and Zhipeng Xu and Zhiyu Wu and Zhongyu Zhang and Zhuoshu Li and Zihui Gu and Zijia Zhu and Zijun Liu and Zilin Li and Ziwei Xie and Ziyang Song and Ziyi Gao and Zizheng Pan},
+      year={2025},
+      eprint={2412.19437},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2412.19437}, 
+}
+
+
+@misc{yang2025qwen3technicalreport,
+      title={Qwen3 Technical Report}, 
+      author={An Yang and Anfeng Li and Baosong Yang and Beichen Zhang and Binyuan Hui and Bo Zheng and Bowen Yu and Chang Gao and Chengen Huang and Chenxu Lv and Chujie Zheng and Dayiheng Liu and Fan Zhou and Fei Huang and Feng Hu and Hao Ge and Haoran Wei and Huan Lin and Jialong Tang and Jian Yang and Jianhong Tu and Jianwei Zhang and Jianxin Yang and Jiaxi Yang and Jing Zhou and Jingren Zhou and Junyang Lin and Kai Dang and Keqin Bao and Kexin Yang and Le Yu and Lianghao Deng and Mei Li and Mingfeng Xue and Mingze Li and Pei Zhang and Peng Wang and Qin Zhu and Rui Men and Ruize Gao and Shixuan Liu and Shuang Luo and Tianhao Li and Tianyi Tang and Wenbiao Yin and Xingzhang Ren and Xinyu Wang and Xinyu Zhang and Xuancheng Ren and Yang Fan and Yang Su and Yichang Zhang and Yinger Zhang and Yu Wan and Yuqiong Liu and Zekun Wang and Zeyu Cui and Zhenru Zhang and Zhipeng Zhou and Zihan Qiu},
+      year={2025},
+      eprint={2505.09388},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2505.09388}, 
+}
