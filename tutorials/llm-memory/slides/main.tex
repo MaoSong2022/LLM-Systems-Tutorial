@@ -724,11 +724,11 @@
       \toprule
       \textbf{Components} & \textbf{Training}  & \textbf{Inference} & \textbf{Optimization}             \\\midrule
       weights             & $2P$               & $2P$               & quantization                      \\\midrule
-      optimizer states    & $12P$              & 0                  & ZeRO, offloading                  \\\midrule
+      optimizer states    & $4P$              & 0                  & ZeRO, offloading                  \\\midrule
       gradients           & $2P$               & 0                  & ZeRO                              \\\midrule
       activations         & $\sim 4Lhs^2b$     & $\sim 0.4P$        & ckpt, offloading, flash attention \\\midrule
       KV cache            & 0                  & $4sLhd_h$          & kv optimization, attention        \\\midrule
-      TOTAL               & $16P+4Lhs^2b$ & $2.4P+4sLhd_h$     &                                   \\ 
+      TOTAL               & $8P+4Lhs^2b$ & $2.4P+4sLhd_h$     &                                   \\ 
       \bottomrule
     \end{tabular}
   \end{center}
