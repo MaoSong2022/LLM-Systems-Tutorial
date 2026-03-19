@@ -503,6 +503,59 @@
    \end{figure}
 \end{frame}
 
+\begin{frame}{Mixed Precision Training-Analysis}
+  \small
+  \begin{table}[h]
+    \centering
+    \begin{tabular}{ccccc}
+    \toprule
+    \textbf{Precision} & \textbf{BF16} & \textbf{FP32} & \textbf{BF16} \\
+    \textbf{AMP} & No & Yes & Yes \\
+    \midrule
+    Weights & BF16 (2) & FP32 (4) & BF16 (2) \\
+    Master weigths & - & - & FP32 (4) \\
+    Gradients & BF16 (2) & FP32 (4) & BF16 (2) \\
+    Adam m & BF16 (2) & FP32 (4) & FP32 (4) \\
+    Adam v & BF16 (2) & FP32 (4) & FP32 (4) \\
+    \midrule
+    Static total (bytes/param) & 8 & 16 & 16 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Comparison of memory usage per parameter across different training configurations.}
+    \label{tab:memory_usage}
+    \end{table}
+    \begin{block}{Remark}
+      \begin{enumerate}
+        \item BF16 (w/ AMP) 与 FP32 (w/ AMP) 的静态显存占用相同，但 BF16 (w/ AMP) 的动态显存占用更低。
+        \item 主流框架基本都使用了BF16/FP8 (w/ AMP) 的训练方式。
+      \end{enumerate}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Mixed Precision Training-Experiments}
+  Experiments on Qwen3-1.7B, batch size = 1, sequence length = 512.
+  \begin{figure}
+      \centering
+      \begin{minipage}{0.32\textwidth}
+          \centering
+          \includegraphics[width=\textwidth]{bf16_wo_amp.png}
+          \label{fig:bf16_wo_amp}
+      \end{minipage}
+      \hfill
+      \begin{minipage}{0.32\textwidth}
+          \centering
+          \includegraphics[width=\textwidth]{fp32_w_amp.png}
+          \label{fig:fp32_w_amp}
+      \end{minipage}
+      \hfill
+      \begin{minipage}{0.32\textwidth}
+          \centering
+          \includegraphics[width=\textwidth]{bf16_w_amp.png}
+          \label{fig:bf16_w_amp}
+      \end{minipage}
+      \caption{(left) BF16 (w/o AMP), $\sim 8P$ bytes, (center) FP32 (w/ AMP), $\sim 16P$ bytes, (right) BF16 (w/ AMP), $\sim 16P$ bytes}
+  \end{figure}
+\end{frame}
 
 
 \begin{frame}{ZeRO\cite{rajbhandari2020zeromemoryoptimizationstraining}}
