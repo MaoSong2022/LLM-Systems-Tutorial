@@ -1,0 +1,93 @@
+
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+\usepackage{amsmath,amssymb,booktabs}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{graphicx}
+\usepackage{ctex}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,        % 彩色链接
+    linkcolor=blue,         % 内部链接颜色
+    urlcolor=red,           % URL链接颜色
+    citecolor=green,        % 引用颜色
+    linkbordercolor={1 0 0} % 链接边框颜色（当colorlinks=false时）
+}
+\usepackage{microtype}
+\usepackage{multirow}
+
+% ---------------------------------------------------------------------------
+% 排版与版式：统一间距与列表样式，避免拥挤
+% ---------------------------------------------------------------------------
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\AtBeginSection[]{
+  \begin{frame}{目录}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+\setlength{\leftmargini}{1.2em}
+\setlength{\itemsep}{0.4em}
+\setlength{\parskip}{0.35em}
+\setbeamertemplate{itemize item}{\scriptsize\raise0.5pt\hbox{$\bullet$}}
+\setbeamertemplate{enumerate item}{\insertenumlabel.}
+\addtobeamertemplate{block body}{}{\vspace{0.3em}}
+
+% 表格与公式周围留白
+\setlength{\abovedisplayskip}{0.6em}
+\setlength{\belowdisplayskip}{0.6em}
+\setlength{\abovedisplayshortskip}{0.3em}
+\setlength{\belowdisplayshortskip}{0.3em}
+
+\usepackage{xcolor}
+\newcommand{\redtwo}{\textcolor{red}{2}}
+\newcommand{\highlight}[1]{\textcolor{blue!70!black}{\textbf{#1}}}
+\graphicspath{{./}{figures/}}
+
+
+\title{Roofline Model}
+\subtitle{Analyzing the Bottleneck of LLMs}
+\author{以往的月}
+\institute{Bilibili}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+
+\begin{frame}{目录}
+  \tableofcontents
+\end{frame}
+
+\section{Motivation}
+
+
+\section{Arithmetic Intensity}
+
+\section{Single GPU Roofline Model}
+
+\section{Multi-GPU Roofline Model}
+
+\section{ Analysis of LLM-specific Roofline Model}
+
+\section{Experiments}
+
+\section{ Conclusion}
+
+
+
+% ===========================================================================
+\section{References}
+% ===========================================================================
+
+
+\begin{frame}[allowframebreaks]
+    \frametitle{References}
+    \bibliographystyle{amsalpha}
+    \bibliography{reference.bib}
+\end{frame}
+
+
+\end{document}
