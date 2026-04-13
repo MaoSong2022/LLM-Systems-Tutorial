@@ -1,22 +1,24 @@
-# LLM 显存占用分析
-
-> 训练与推理过程中的内存需求与优化
+# LLM 显存占用分析-训练与推理过程中的内存需求与优化
 
 ## Motivation
 
-**A simple problem:** 假如我有一张 80GB 的显卡，我想训练/推理一个 4B 的模型，我应该设置多大的 batch size 和 sequence length?
+我们从一个简单的问题开始
 
-在这个 tutorial 中，我们将基于这个问题来进行思考和分析。我们考虑更一般的问题形式：
+> 假如我有一张 80GB 的显卡，我想训练/推理一个 4B 的模型，我应该设置多大的 batch size 和 sequence length?
+
+在这个 tutorial 中，我们将基于这个问题来进行思考和分析。我们将考虑更一般的问题形式：
 
 **Motivation:** 在训练和推理时 LLM 所需要的内存是多少？如何进行优化内存占用？
 
-我们将先介绍训练/推理阶段的内存计算，再针对可优化部分进行分析并介绍相应优化算法。
+为了回答以上问题，我们先介绍训练/推理阶段的内存计算，再针对可优化部分进行分析并介绍相应优化算法。
 
 ## Background
 
 ### Transformer Architecture
 
-以 Qwen3 [[1]](#references) 为例，现代 LLM 的架构包含多层 Transformer Block，其中具体的模块不同的模型可能有改动。
+以 Qwen3 为例，现代 LLM 的架构包含多层 Transformer Block，其中具体的模块不同的模型可能有改动。下图是对应的模型架构
+
+![Architecture of Qwen3](slides/LM_architecture.png)
 
 ### Notation
 
