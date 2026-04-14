@@ -105,10 +105,9 @@
         \label{fig:rl_process}
     \end{figure}
     \vspace{-0.3cm}
-    \begin{block}{Definition}
+    \begin{definition}[Reinforcement Learning]
         强化学习是一个通过构建可以与环境进行交互的 agent 来解决控制和决策任务的学习框架，交互的方式为 agent 执行 action, 然后环境给予奖励
-    \end{block}
-
+    \end{definition}
 \end{frame}
 
 \begin{frame}{Markov Decision Process (MDP)}
@@ -141,16 +140,35 @@
     \end{equation}
 
     可以看到，轨迹的概率分布是由初始状态分布，策略，以及环境模型共同决定的，我们可以将其记为 $\tau\sim(p_0,\pi, p)$.
-
+    \begin{block}{Remark}
+        \begin{itemize}
+            \item 轨迹的概率分布是由初始状态分布，策略，以及环境模型共同决定的，我们可以将其记为 $\tau\sim(p_0,\pi, p)$.
+            \item 我们在这个tutorial中仅考虑有限horizon的MDP, 即 $T<\infty$.
+        \end{itemize}
+    \end{block}
 \end{frame}
 
-\begin{frame}{Objective of RL}
+\begin{frame}{Expected Return}
     \begin{definition}[Expected Return]
         \begin{equation}
             R(\tau) = \sum_{t=0}^{T-1} \gamma^t r_t
         \end{equation}
+        其中 $\gamma\in(0,1)$ 是 discount factor, 用于将未来的奖励折现到当前时刻。
     \end{definition}
 
+    一般我们会将 expected return 记为 $G_0$, 即
+    \begin{equation}
+        G_0 = \sum_{t=0}^{T-1} \gamma^t r_t
+    \end{equation}
+
+    $G_0$ 存在如下递推关系
+    \begin{equation}
+        G_0 = r_0 + \gamma G_1
+    \end{equation}
+    \footnotetext{后续我们将会交错使用 $G_0$ 和 $R(\tau)$ 来表示 expected return.}
+\end{frame}
+
+\begin{frame}{Objective of RL}
     \begin{block}{Reward Hypothesis}
         所有的目标都可以被描述为最大化 expected return.
     \end{block}
@@ -206,33 +224,51 @@
 
 \section{Reinforcement Learning: Bellman Equation}
 
-\begin{frame}{Introduction}
-    TODO
+\begin{frame}{Why Bellman Equation?}
+    \begin{block}{Motivation}
+        在强化学习中，我们关心的不是某一步立即得到的 reward，
+        而是 agent 从当前状态出发，在未来持续决策后能够获得的累计回报。
+    \end{block}
+    \begin{block}{Difficulty}
+        但是，累计回报依赖于整条未来轨迹：
+        后续会到达什么状态、采取什么动作、获得什么奖励，都是随机的。
+        因此直接分析 expected return 往往比较困难。
+    \end{block}
+    \begin{block}{Core Idea}
+        \textbf{将长期回报写成“当前一步的收益 + 下一状态的未来价值”}，从而把一个全局问题转化为递推问题。
+        \begin{equation}
+            \text{long-term value} = \text{immediate reward} + \text{discounted future value}
+        \end{equation}
+    \end{block}
 \end{frame}
 
 \begin{frame}{Value function and Q function}
-\begin{block}{Value function}
+\begin{definition}[Value function]
+    Value function 定义为：
         \begin{equation}
             V^{\pi}(s) = \mathbb{E}^{\pi}[G_0\mid s_0=s]
         \end{equation}
-        value function 的具体含义为：\textbf{agent 从当前状态 $s$ 出发，一直遵循当前策略 $\pi$， 最后获取到的 expected discounted return}.
-\end{block}
+        value function 的具体含义为：\textbf{agent 从当前状态 $s$ 出发，一直遵循当前策略 $\pi$， 最后获取到的 expected return}.
+\end{definition}
 
-\begin{block}{Q function}
+\begin{definition}[Q function]
+    Q function 定义为：
     \begin{equation}
         Q^{\pi}(s,a) = \mathbb{E}^{\pi}[G_0\mid s_0=s, a_0=a]
     \end{equation}
-    Q function 的具体含义为：\textbf{agent 从当前状态 $s$ 出发，执行动作 $a$, 一直遵循当前策略 $\pi$, 最后获取到的 expected discounted return}.
-\end{block}
+    Q function 的具体含义为：\textbf{agent 从当前状态 $s$ 出发，执行动作 $a$, 一直遵循当前策略 $\pi$, 最后获取到的 expected return}.
+\end{definition}
 
 \footnotetext{在不影响理解的情况下，我们省略 $\tau\sim (p_0,\pi, p)$ 的标记}
 \end{frame}
 
 \begin{frame}{Relationship between value function and Q function}
     \begin{block}{Relationship between value function and Q function}
+        Value function 和 Q function 之间存在如下关系：
         \begin{equation}
             V^{\pi}(s)  = \mathbb{E}_{a_0\sim \pi(\cdot\mid s_0)}[Q^{\pi}(s,a)]
         \end{equation}
+        即 value function 是 Q function 的期望。
     \end{block}
     \begin{proof}
         由全概率公式，我们有
@@ -244,23 +280,20 @@
             \boxed{V^{\pi}(s)  = \mathbb{E}_{a_0\sim \pi(\cdot\mid s_0)}[Q^{\pi}(s,a)]}
         \end{equation}
     \end{proof}
-    \begin{block}{Remark}
-        value function 是 Q function 的期望，Q function 是 value function 的期望。
-    \end{block}
 \end{frame}
 
 \begin{frame}{Iterative property}
     Value function 和 Q function 存在如下递推关系
     \begin{align}
-        V^\pi(s) &= \mathbb{E}_{a_0\sim \pi(\cdot\mid s),\ (r_0,s_0)\sim p(\cdot,\cdot\mid s,a_0)}[r_0 + \gamma V^\pi(s_1)\mid s_0=s]\\
+        V^\pi(s) &= \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}[r + \gamma V^\pi(s')\mid s]\\
         Q^\pi(s,a) &= \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a),\ a'\sim \pi(\cdot\mid s')}[r + \gamma Q^\pi(s',a')\mid s,a]
     \end{align}
     \begin{proof}
         \begin{align}
             V^{\pi}(s) &= \mathbb{E}^{\pi}[r_0+\gamma G_1\mid s_0=s]\\
-            &= \mathbb{E}_{a_0\sim \pi(\cdot\mid s_0),\ (r_0,s_1)\sim p(\cdot,\cdot\mid s,a_0)}\left[\mathbb{E}^\pi[r_0 + \gamma G_1\mid s_0,a_0,r_0,s_1]\mid s_0=s\right]\\
-            &= \mathbb{E}_{a_0\sim \pi(\cdot\mid s_0),\ (r_0,s_1)\sim p(\cdot,\cdot\mid s,a_0)}\left[r_0 + \gamma \mathbb{E}^\pi[G_1\mid s_1]\mid s_0=s\right]\\
-            &= \mathbb{E}_{a_0\sim \pi(\cdot\mid s_0),\ (r_0,s_1)\sim p(\cdot,\cdot\mid s,a_0)}\left[r_0 + \gamma V^\pi[s_1)\mid s_0=s\right]
+            &= \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[\mathbb{E}^\pi[r + \gamma G_1\mid s,a,r,s']\mid s\right]\\
+            &\overset{\text{Markov}}{=} \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r + \gamma \mathbb{E}^\pi[G_1\mid s',a']\mid s\right]\\
+            &= \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r + \gamma V^\pi[s')\mid s\right]
         \end{align}
     \end{proof}
 \end{frame}
@@ -414,20 +447,20 @@
     假设 $\gamma\in(0,1)$, $|\mathcal{S}|<\infty$ $|\mathcal{A}|<\infty$ 以及 $|r|\leq R<\infty, \mathrm{a.s.}$.  
     那么 optimal value function $V^*:\mathcal{S}^+\to\mathbb{R}$ 存在，且满足 Bellman optimality equation:
     \begin{equation}
-        V^*(s) = \max_{a\in\mathcal{A}}\mathbb{E}_{\ (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[r+\gamma V^*(s')\mid s, a\right]
+        V^*(s) = \max_{a\in\mathcal{A}}\mathbb{E}_{\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V^*(s')\mid s, a\right]
     \end{equation}
 
     反之，如果存在函数 $V:\mathcal{S}^+\to\mathbb{R}$ 满足 Bellman optimality equation, 则 $V=V^*$.
     最后，我们可以给出一个 optimal deterministic policy:
     \begin{equation}
-        \pi^*(s) = \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[r+\gamma V^*(s')\mid s, a\right]=\arg\max_{a\in\mathcal{A}} Q^*(s,a)
+        \pi^*(s) = \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V^*(s')\mid s, a\right]=\arg\max_{a\in\mathcal{A}} Q^*(s,a)
     \end{equation}
 \end{theorem}
 \end{frame}
 
 \begin{frame}{Bellman Optimality Equation Theorem--Proof}
     \tiny
-    \begin{lemma}
+    \begin{lemma}\label{lemma:bellman-optimality-equation-theorem-proof-1}
         令 $\pi$ 为一个策略， $\mathcal{T}^\pi$ 和 $\mathcal{T}^*$ 分别是 Bellman operator 和 Bellman optimality operator. 对任意 $V:\mathcal{S}^+\to\mathbb{R}$, 我们有
         \begin{equation}
             \mathcal{T}^\pi(V) \leq \mathcal{T}^*(V)
@@ -439,13 +472,13 @@
     \end{lemma}
     \begin{proof}
         \begin{align*}
-        \mathcal{T}^\pi(V)(s) &=  \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[r+\gamma V(s')\mid s\right]\leq \mathbb{E}_{a\sim \pi(\cdot\mid s)}\left[\max_{a'} \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a')}\left[r+\gamma V(s')\mid s\right]\right]\\
+        \mathcal{T}^\pi(V)(s) &=  \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V(s')\mid s\right]\leq \mathbb{E}_{a\sim \pi(\cdot\mid s)}\left[\max_{a'} \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a')}\left[r+\gamma V(s')\mid s\right]\right]\\
         &= \max_{a'} \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a')}\left[r+\gamma V(s')\mid s\right]= \mathcal{T}^*(V)
         \end{align*}
         其次，令 $a^*\in\arg\max_{a}\mathbb{E}[r+\gamma U(s')]$, 那么
         \begin{align*}
-        \mathcal{T}^*(U)(s) &=  \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a'))}\left[r+\gamma U(s')\mid s\right]\leq \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a'))}\left[r+\gamma V(s')\mid s\right]\\
-        &\leq \max_a\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a'))}\left[r+\gamma V(s')\mid s\right]= \mathcal{T}^*(V)
+        \mathcal{T}^*(U)(s) &=  \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a')}\left[r+\gamma U(s')\mid s\right]\leq \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a'))}\left[r+\gamma V(s')\mid s\right]\\
+        &\leq \max_a\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a')}\left[r+\gamma V(s')\mid s\right]= \mathcal{T}^*(V)
         \end{align*}
         证毕。
     \end{proof}
@@ -462,10 +495,9 @@
         我们证明 $\mathcal{T}^*V$ 是一个 contraction mapping.
         \begin{align}
         \left|(\mathcal{T}^* V_1)(s)-(\mathcal{T}^* V_2)(s)\right| &= \left|\max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[r+\gamma V_1(s')\mid s, a\right]- \max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[r+\gamma V_2(s')\mid s, a\right]\right|\\
-        &\leq \max_{a\in\mathcal{A}}\left|\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[r+\gamma V_1(s')\mid s, a\right]- \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[r+\gamma V_2(s')\mid s, a\right]\right|\\
-        &= \max_{a\in\mathcal{A}}\left|\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[\gamma V_1(s')-V_2(s')\mid s, a\right]- \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[r+\gamma V_2(s')\mid s, a\right]\right|\\
-        &\leq \gamma  \max_{a\in\mathcal{A}}\left|\mathbb{E}_{a\sim\pi(\cdot\mid s'), (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[V_1^{\pi}(s')-V_2^{\pi}(s')\mid s,a\right]\right|\\
-        &\leq \gamma  \max_{a\in\mathcal{A}}\mathbb{E}_{a\sim\pi(\cdot\mid s'), (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[\left|V_1^{\pi}(s')-V_2^{\pi}(s')\right|\mid s,a\right]\\
+        &\leq \max_{a\in\mathcal{A}}\left|\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V_1(s')\mid s, a\right]- \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V_2(s')\mid s, a\right]\right|\\
+        &= \gamma  \max_{a\in\mathcal{A}}\left|\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[V_1(s')-V_2(s')\mid s,a\right]\right|\\
+        &\leq \gamma  \max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[\left|V_1(s')-V_2(s')\right|\mid s,a\right]\\
         &\leq \gamma  \max_{a\in\mathcal{A}}\max_{s''\in\mathcal{S}}\left|V_1(s'')-V_2(s'')\right|= \gamma \left\|V_1-V_2\right\|_\infty
         \end{align}
         因此，我们有
@@ -482,22 +514,28 @@
     \begin{proof}
         根据不动点定理，$\mathcal{T}^*$ 存在一个不动点，我们将其记为 $V^*$. 接下来，我们定义 $\pi^*$ 为
         \begin{equation}
-        \pi^*(s) = \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[r+\gamma V^*(s')\mid s, a\right]
+        \pi^*(s) = \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V^*(s')\mid s, a\right]
         \end{equation}
         此时，我们有
         \begin{align}
-            V^*(s) &= \mathbb{E}^{\pi^*}\left[r_0+\gamma V^*(s_1)\mid s_0=s\right]\\
-            &= \mathbb{E}^{\pi^*}\left[r_0+\gamma \mathbb{E}^{\pi^*}\left[r_1+\gamma V^*(s_2)\mid s_0=s_1, r_0\right]\mid s_0=s\right]\\
-            &= \mathbb{E}^{\pi^*}\left[\mathbb{E}^{\pi^*}\left[r_0+\gamma (r_1+\gamma V^*(s_2))\mid s_0=s_1, r_0\right]\mid s_0=s\right]\\
-            &= \mathbb{E}^{\pi^*}\left[r_0+\gamma r_1+\gamma^2 V^*(s_2)\mid s_0=s\right]\\
-            &= \mathbb{E}^{\pi^*}\left[r_0+\gamma r_1+\gamma^2r_2+\cdots\mid s_0=s\right]= V^{\pi^*}(s)
+            V^*(s) &= \mathbb{E}^{\pi^*}\left[r_0+\gamma V^*(s_1)\mid s\right]\\
+            &= \mathbb{E}^{\pi^*}\left[r_0+\gamma \mathbb{E}^{\pi^*}\left[r_1+\gamma V^*(s_2)\mid s_1\right]\mid s\right]\\
+            &= \mathbb{E}^{\pi^*}\left[\mathbb{E}^{\pi^*}\left[r_0+\gamma (r_1+\gamma V^*(s_2))\mid s_1\right]\mid s\right]\\
+            &= \mathbb{E}^{\pi^*}\left[r_0+\gamma r_1+\gamma^2 V^*(s_2)\mid s\right]\\
+            &= \mathbb{E}^{\pi^*}\left[r_0+\gamma r_1+\gamma^2r_2+\cdots\mid s\right]= V^{\pi^*}(s)
         \end{align}
         即 $V^*=V^{\pi^*}$. 现在我们证明 $\pi^*$ 是最优策略，令 $\pi$ 为任意一个策略，我们有
         \begin{equation}
-        V^\pi  \leq V^*= \mathcal{T}^*(V^\pi)\leq ( \mathcal{T}^*)^2(V^\pi) \leq\cdots\leq (\mathcal{T}^*)^k(V^\pi) \to V^*=V^{\pi^*}
+        V^\pi
+        \overset{\text{Lemma~\ref{lemma:bellman-optimality-equation-theorem-proof-1}}}{\le}
+        \leq V^*
+        \overset{\text{BOE}}{=}  \mathcal{T}^*(V^\pi)
+        \overset{V^\pi\leq \mathcal{T}^*(V^\pi)}{\leq}(\mathcal{T}^*)^2(V^\pi)
+        \leq \cdots
+        \leq (\mathcal{T}^*)^k(V^\pi)
+        \xrightarrow[k\to\infty]{\text{fixed-point / contraction}} V^*
+        = V^{\pi^*}.
         \end{equation}
-        这里第一个等式是 Bellman equation, 第一个不等式是由于下面的 Lemma,最后的极限使用了不动点定理。
-        因此我们有 $V^\pi\leq V^*$, 从而 $\pi^*$ 是最优策略，且 $V^*$ 是对应的 optimal value function. 
     \end{proof}
 \end{frame}
 
@@ -518,7 +556,7 @@
 \begin{frame}{Value Iteration Algorithm}
     根据BOE定理的证明，我们知道
     \begin{equation}
-        (\mathcal{T}^* V)(s) := \max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[r+\gamma V(s')\mid s, a\right]
+        (\mathcal{T}^* V)(s) := \max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V(s')\mid s, a\right]
     \end{equation}
     是一个 contraction mapping, 因此我们可以构造函数序列
     \begin{equation}
@@ -527,8 +565,8 @@
     由不动点定理，我们知道这个序列收敛到 $V^*$. 这样，我们就得到了value iteration algorithm:
     \begin{align}
         V^{k+1}&=\mathcal{T}^* V^k\\
-        V^{k+1}(s) &= \max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[r+\gamma V^k(s')\mid s, a\right]\\
-        \pi^{k+1}(s) &= \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[r+\gamma V^k(s')\mid s, a\right]
+        V^{k+1}(s) &= \max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V^k(s')\mid s, a\right]\\
+        \pi^{k+1}(s) &= \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V^k(s')\mid s, a\right]
     \end{align}
 \end{frame}
 
@@ -542,30 +580,54 @@
 
 \section{Reinforcement Learning: Policy Evaluation}
 
-\begin{frame}{Introduction}
-    在本节中，我们将介绍如何评估 (evaluate) 一个 policy. 要评估一个 policy $\pi$, 我们需要求出对应的 value function $V^\pi$.
+\begin{frame}{Why Policy Evaluation?}
+    \begin{block}{Motivation}
+        在强化学习中，我们通常希望回答一个基本问题：
 
-    在上一节中，我们其实已经给出了一种iterative algorithm 来求解value function, 但是，这个算法的问题在于：收敛速度慢，并且state space 和 action space 较大时，计算复杂度较高。
+        \begin{center}
+            \textbf{给定一个策略 $\pi$，它到底“好不好”？}
+        \end{center}
 
-    因此，我们在本节中介绍如何高效的求解/拟合value function.
+        更具体地说，我们希望知道 agent 在不同状态下遵循该策略时，未来能够获得多大的长期回报。
+    \end{block}
+    \begin{block}{Difficulty}
+        这个问题本质上对应于求解策略 $\pi$ 的 value function $V^\pi$。
+        虽然上一节已经知道 $V^\pi$ 满足 Bellman equation，
+        但当状态空间较大、动作空间较大，或者环境模型未知时，
+        直接进行精确求解往往计算代价较高。
+    \end{block}
+    \begin{block}{Core Idea}
+        \textbf{利用 Bellman equation、采样和函数逼近，
+        高效地估计或拟合给定策略对应的 value function $V^\pi$。}
+    \end{block}
 \end{frame}
 
 \begin{frame}{Monte Carlo Introduction}
-    TODO: 介绍 Monte Carlo 方法的基本思想。
-    \begin{block}{Monte Carlo}
-        Monte Carlo (MC) 方法是一种基于随机采样的方法，用于估计期望值。它通过从样本中估计期望值，从而得到对期望值的估计。
+    \begin{block}{Basic Idea}
+        Monte Carlo (MC) 方法通过随机采样来估计期望值：
+        \begin{center}
+            \textbf{用样本平均来逼近期望}
+        \end{center}
+        统计学保证了样本平均是期望的\textbf{无偏估计}。
     \end{block}
-    \begin{block}{Monte Carlo Estimator}
-        \begin{equation}
-            \hat{V}^\pi(s) = \frac{1}{N}\sum_{i=1}^{N}R_i
-        \end{equation}
+    \begin{block}{In RL}
+        对于 value function
+        \[
+            V^\pi(s)=\mathbb{E}^\pi\!\left[R(\tau)\mid s_0=s\right],
+        \]
+        我们可以从 $s_0=s$ 出发，按照策略 $\pi$ 采样多条完整轨迹，
+        并用这些轨迹 return 的平均值来近似 $V^\pi(s)$。
+    \end{block}
+    \begin{block}{Remark}
+        Monte Carlo 方法的特点是：简单、直观、无需环境模型，
+        但必须等轨迹结束后才能得到一次完整的估计。
     \end{block}
 \end{frame}
 
 \begin{frame}{Monte Carlo}
     注意到
     \begin{equation}
-    V^\pi(s) = \mathbb{E}^\pi\left[\sum_{t=0}^{T-1}\gamma^tr_t\mid s_0=s\right]
+    V^\pi(s) = \mathbb{E}^\pi\left[R(\tau)\mid s_0=s\right]
     \end{equation}
 
     我们可以利用 Monte Carlo (MC) 方法来进行估计，即从 $s_0=s$ 出发，独立随机采样 $N$ 条轨迹
@@ -575,7 +637,7 @@
     \end{equation}
     然后我们使用样本平均来近似期望
     \begin{equation}
-        V^\pi(s) = \mathbb{E}^\pi\left[\sum_{t=0}^{T-1}\gamma^tr_t\mid s_0=s\right]\approx \frac{1}{N}\sum_{i=1}^N\sum_{t=0}^{T-1}\gamma^tr_t^{(i)}
+        V^\pi(s) = \mathbb{E}^\pi\left[R(\tau)\mid s_0=s\right]\approx \frac{1}{N}\sum_{i=1}^NR(\tau^{(i)})
     \end{equation}
     这样，我们就得到了一个 Monte Carlo estimator 来估计 $V^\pi(s)$.
     如果 $\mathcal{S}$ 比较小，我们可以遍历 $s\in\mathcal{S}$ 来估计 $V^\pi$. 但是，如果 $\mathcal{S}$ 比较大，这种方法的计算复杂度较高。
@@ -584,21 +646,29 @@
 
 
 \begin{frame}{Objective of Value based methods}
-    当 $\mathcal{S}$ 非常大或者连续时，我们需要使用神经网络 $V_\phi$ 来近似 $V^\pi$,
+    为了解决状态空间较大或者连续时，直接使用MC方法计算复杂度较高的问题，我们可以使用函数逼近的方法来近似 $V^\pi$.
 
-    \begin{equation}
-        \min_{\phi} \mathcal{L}(\phi) =\mathbb{E}_{s\sim p_0}\left[\frac12\left(V_\phi(s)-V^\pi(s)\right)^2\right]
+    具体做法就是，我们需要使用神经网络 $V_\phi$ 来近似 $V^\pi$,
+    \begin{equation}\label{eq:value-based-methods-objective}
+        \min_{\phi} \mathcal{L}(\phi) =\mathbb{E}\left[\frac12\left(V_\phi(s)-V^\pi(s)\right)^2\right]
     \end{equation}
+    然后我们可以使用随机梯度下降法来更新参数 $\phi$.
+
+    \footnotetext{这里关于$s$的概率分布需要进一步讨论，请参考 <强化学习的数学原理>}
 \end{frame}
 
 \begin{frame}{Gradient Calculation}
-    对上面的目标函数求导得到
+    对上面的目标函数~\eqref{eq:value-based-methods-objective}求导得到
     \begin{align}
-    \nabla_\phi \mathcal{L}(\phi) &= \mathbb{E}_{s\sim p_0}\left[\left(V_\phi(s)-V^\pi(s)\right)\nabla_\phi V_\phi(s)\right]\\
-    &= \mathbb{E}_{s\sim p_0}\left[\left(V_\phi(s)- \mathbb{E}^\pi\left[\sum_{t=0}^{T-1}\gamma^tr_t\mid s_0=s\right]\right)\nabla_\phi V_\phi(s)\right]\\
-    &=\mathbb{E}_{s\sim p_0}\left[\mathbb{E}^\pi\left[\left(V_\phi(s)- \sum_{t=0}^{T-1}\gamma^tr_t\right)\nabla_\phi V_\phi(s)\mid s_0=s\right]\right]\\
-    &= \mathbb{E}_{s\sim p_0}^\pi\left[\left(V_\phi(s)- \sum_{t=0}^{T-1}\gamma^tr_t\right)\nabla_\phi V_\phi(s)\mid s_0=s\right]
+    \nabla_\phi \mathcal{L}(\phi) &= \mathbb{E}\left[\left(V_\phi(s)-V^\pi(s)\right)\nabla_\phi V_\phi(s)\right]\\
+    &= \mathbb{E}\left[\left(V_\phi(s)- \mathbb{E}^\pi\left[R(\tau)\mid s_0=s\right]\right)\nabla_\phi V_\phi(s)\right]\\
+    &=\mathbb{E}\left[\mathbb{E}^\pi\left[\left(V_\phi(s)- R(\tau)\right)\nabla_\phi V_\phi(s)\mid s_0=s\right]\right]\\
+    &= \mathbb{E}^\pi\left[\left(V_\phi(s)- R(\tau)\right)\nabla_\phi V_\phi(s)\mid s_0=s\right]
     \end{align}
+    我们现在可以使用MC方法来估计梯度，即
+    \begin{equation}
+        \nabla_\phi \mathcal{L}(\phi) \approx g:=\frac{1}{N}\sum_{i=1}^N\left(V_\phi(s^{(i)})- R(\tau^{(i)})\right)\nabla_\phi V_\phi(s^{(i)})
+    \end{equation}
 \end{frame}
 
 \begin{frame}{MC and SGD}
@@ -612,35 +682,61 @@
                 $t\gets t+1$\;
             }
             $T=t$\;
-            $g=\left(V_\phi(s_0)- \sum_{t=0}^{T-1}\gamma^tr_t\right)\nabla_\phi V_\phi(s_0)$\;
+            $g=\left(V_\phi(s_0)- R(\tau)\right)\nabla_\phi V_\phi(s_0)$\;
             update $\phi$ using $g$ with an optimizer\;
         }
     \end{algorithm}
 \end{frame}
 
+\begin{frame}{Temporal Difference Learning--Intuition}
+    为了理解TD learning, 我们考虑下面这个例子
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.5\linewidth]{../images/TD-learning-example.png}
+        \caption{Illustration of TD learning}
+        \label{fig:td_learning_intuition}
+    \end{figure}
+    也就是说，TD learning本质上是
+    \begin{center}
+        \textbf{通过新的信息和新的预测来更新旧的预测}。
+    \end{center}
+\end{frame}
+
 \begin{frame}{Temporal Difference Learning}
-    Temporal difference (TD) learning 通过相邻两步的转换关系来近似函数。注意到，
+    Temporal difference (TD) learning 通过相邻两步的转换关系来近似value function。注意到，
     \begin{equation}
         V^\pi(s) =\mathbb{E}^\pi[r_0 + \gamma V^\pi(s_1)\mid s_0=s]
     \end{equation}
-    与前面的方法类似，我们先采样然后使用 MC 来进行估计
+
+    我们将
+
     \begin{equation}
-        V^\pi(s) =\mathbb{E}^\pi[r_0 + \gamma V^\pi(s_1)\mid s_0=s]\approx \frac{1}N\sum_{i=1}^N\left(r_0^{(i)} + \gamma V^\pi(s_1^{(i)})\right)
+        \overline{V}_t = r_t + \gamma V^\pi(s_{t+1})
     \end{equation}
+    称为 TD target. 将
+    \begin{equation}
+        \delta_t = V^\pi(s_t) - \left(r_t + \gamma V^\pi(s_{t+1})\right)
+    \end{equation}
+    称为 TD error. 
+
 \end{frame}
 
 \begin{frame}{Temporal Difference Learning}
     当 $\mathcal{S}$ 比较大或者连续时，我们构造损失函数
     \begin{equation}
-    \min_{\phi} \mathcal{L}(\phi) =\mathbb{E}_{s\sim p_0}\left[\frac12\left(V_\phi(s)-V^\pi(s)\right)^2\right]=\mathbb{E}_{s\sim p_0}^\pi\left[\left(V_\phi(s)- r_0-\gamma V^\pi(s_1)\right)^2\right]
+    \min_{\phi} \mathcal{L}(\phi) =\mathbb{E}\left[\frac12\left(V_\phi(s)-V^\pi(s)\right)^2\right]=\mathbb{E}\left[\left(V_\phi(s)- r_0-\gamma V^\pi(s_1)\right)^2\right]
     \end{equation}
     对应的梯度为
     \begin{equation}
-    \nabla_\phi \mathcal{L}(\phi) =\mathbb{E}_{s\sim p_0}^\pi\left[\left(V_\phi(s)- r_0-\gamma V^\pi(s_1)\right)\nabla_\phi V_\phi(s)\mid s_0=s\right]
+    \nabla_\phi \mathcal{L}(\phi) =\mathbb{E}\left[\left(V_\phi(s)- r_0-\gamma \boxed{V^\pi(s_1)}\right)\nabla_\phi V_\phi(s)\mid s_0=s\right]
+    \end{equation}
+    令
+    \begin{equation}
+    g := \left(V_\phi(s)- r_0-\gamma \boxed{V^\pi(s_1)}\right)\nabla_\phi V_\phi(s)
     \end{equation}
     但是，这里存在的问题在于，我们使用了 $V^\pi(s_1)$, 而这个值是未知的，因此，一个做法是使用当前的 value function $V_\phi$ 来进行代替，即
     \begin{equation}
-    \nabla_\phi \mathcal{L}(\phi) \approx \mathbb{E}_{s\sim p_0}^\pi\left[\left(V_\phi(s)- r_0-\gamma V_\phi(s_1)\right)\nabla_\phi V_\phi(s)\mid s_0=s\right]
+    \nabla_\phi \mathcal{L}(\phi) \approx \mathbb{E}\left[\left(V_\phi(s)- r_0-\gamma V_\phi(s_1)\right)\nabla_\phi V_\phi(s)\mid s_0=s\right]
     \end{equation}
 \end{frame}
 
@@ -711,6 +807,7 @@
 \end{frame}
 
 \begin{frame}{Temporal Difference Learning--Algorithm}
+    最终，我们得到了一个简单的 TD 算法，其伪代码为
     \begin{algorithm}[H]
         \caption{Value function approximation with TD}
         \While{not converged}{
