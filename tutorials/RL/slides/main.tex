@@ -150,17 +150,16 @@
 
 \begin{frame}{Expected Return}
     \begin{definition}[Expected Return]
+        Expected (discounted) return 定义为：
         \begin{equation}
             R(\tau) = \sum_{t=0}^{T-1} \gamma^t r_t
         \end{equation}
         其中 $\gamma\in(0,1]$ 是 discount factor, 用于将未来的奖励折现到当前时刻。
     \end{definition}
-
     一般我们会将 expected return 记为 $G_0$, 即
     \begin{equation}
         G_0 = \sum_{t=0}^{T-1} \gamma^t r_t
     \end{equation}
-
     $G_0$ 存在如下递推关系
     \begin{equation}
         G_0 = r_0 + \gamma G_1
@@ -258,12 +257,12 @@
         而是 agent 从当前状态出发，在未来持续决策后能够获得的累计回报。
     \end{block}
     \begin{block}{Difficulty}
-        但是，累计回报依赖于整条未来轨迹：
+        累计回报依赖于整条未来轨迹：
         后续会到达什么状态、采取什么动作、获得什么奖励，都是随机的。
         因此直接分析 expected return 往往比较困难。
     \end{block}
     \begin{block}{Core Idea}
-        \textbf{将长期回报写成“当前一步的收益 + 下一状态的未来价值”}，从而把一个全局问题转化为递推问题。
+        \textbf{将长期回报写成“当前一步的收益 + 下一状态的未来价值”}，把一个全局问题转化为递推问题。
         \begin{equation}
             \text{long-term value} = \text{immediate reward} + \text{discounted future value}
         \end{equation}
@@ -284,7 +283,7 @@
     \begin{equation}
         Q^{\pi}(s,a) = \mathbb{E}^{\pi}[G_0\mid s_0=s, a_0=a]
     \end{equation}
-    Q function 的具体含义为：\textbf{agent 从当前状态 $s$ 出发，执行动作 $a$, 一直遵循当前策略 $\pi$, 最后获取到的 expected return}.
+    Q function 的具体含义为：\textbf{agent 从当前状态 $s$ 出发，先执行动作 $a$, 然后一直遵循当前策略 $\pi$, 最后获取到的 expected return}.
 \end{definition}
 
 \footnotetext{在不影响理解的情况下，我们省略 $\tau\sim (p_0,\pi, p)$ 的标记}
@@ -294,33 +293,32 @@
     \begin{block}{Relationship between value function and Q function}
         Value function 和 Q function 之间存在如下关系：
         \begin{equation}
-            V^{\pi}(s)  = \mathbb{E}_{a_0\sim \pi(\cdot\mid s_0)}[Q^{\pi}(s,a)]
+            V^{\pi}(s)  = \mathbb{E}_{a\sim \pi(\cdot\mid s)}[Q^{\pi}(s,a)]
         \end{equation}
         即 value function 是 Q function 的期望。
     \end{block}
     \begin{proof}
-        由全概率公式，我们有
-        \begin{equation}
-            \mathbb{E}[G_0\mid s_0=s] = \sum_{a\in\mathcal{A}}\mathbb{E}\left[G_0\mid s_t=s, a_0=a\right]\pi(a\mid s_0=s)
-        \end{equation}
-        即
-        \begin{equation}
-            \boxed{V^{\pi}(s)  = \mathbb{E}_{a_0\sim \pi(\cdot\mid s_0)}[Q^{\pi}(s,a)]}
-        \end{equation}
+        \begin{align}
+            V^{\pi}(s)  &= \mathbb{E}[G_0\mid s_0=s] \\
+            &= \sum_{a\in\mathcal{A}}\mathbb{E}\left[G_0\mid s_t=s, a_0=a\right]\pi(a\mid s_0=s)\\
+            &= \sum_{a\in\mathcal{A}}Q^{\pi}(s,a)\pi(a\mid s)= \mathbb{E}_{a\sim \pi(\cdot\mid s)}[Q^{\pi}(s,a)].
+        \end{align}
     \end{proof}
 \end{frame}
 
 \begin{frame}{Iterative property}
-    Value function 和 Q function 存在如下递推关系
-    \begin{align}
-        V^\pi(s) &= \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}[r + \gamma V^\pi(s')\mid s]\\
-        Q^\pi(s,a) &= \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a),\ a'\sim \pi(\cdot\mid s')}[r + \gamma Q^\pi(s',a')\mid s,a]
-    \end{align}
+    \begin{block}{Iterative property}
+        Value function 和 Q function 存在如下递推关系
+        \begin{align}
+            V^\pi(s) &= \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}[r + \gamma V^\pi(s')\mid s]\\
+            Q^\pi(s,a) &= \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a),\ a'\sim \pi(\cdot\mid s')}[r + \gamma Q^\pi(s',a')\mid s,a]
+        \end{align}
+    \end{block}
     \begin{proof}
         \begin{align}
             V^{\pi}(s) &= \mathbb{E}^{\pi}[r_0+\gamma G_1\mid s_0=s]\\
             &= \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[\mathbb{E}^\pi[r + \gamma G_1\mid s,a,r,s']\mid s\right]\\
-            &\overset{\text{Markov}}{=} \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r + \gamma \mathbb{E}^\pi[G_1\mid s',a']\mid s\right]\\
+            &\overset{\text{Markov}}{=} \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r + \gamma \mathbb{E}^\pi[G_1\mid s',a]\mid s\right]\\
             &= \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r + \gamma V^\pi[s')\mid s\right]
         \end{align}
     \end{proof}
@@ -329,10 +327,10 @@
 
 \begin{frame}{Bellman Equation (Value function)}
     \begin{theorem}[Bellman Equation]
-        令 $\pi$ 为一个策略，假设 $\gamma\in(0,1)$, $|\mathcal{S}|<\infty$ 以及 $|r|\leq R<\infty, \mathrm{a.s.}$. 
+        令 $\pi$ 为一个策略，假设 $\gamma\in(0,1)$, $|\mathcal{S}|<\infty$ 以及 $|r|\leq R<\infty, \mathrm{a.s.}$\footnote{$\mathrm{a.s.}$ 表示 almost surely}. 
         那么 $\pi$ 对应的 value function $V^\pi:\mathcal{S}^+\to\mathbb{R}$ 存在，且满足 Bellman equation:
         \begin{equation}
-        V^\pi(s) = \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[r+\gamma V(s')\mid s\right]
+        V^\pi(s) = \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}^{\pi}\left[r_0+\gamma V^\pi(s')\mid s_0=s\right]
         \end{equation}
         反之，如果存在函数 $V:\mathcal{S}^+\to\mathbb{R}$ 满足 Bellman equation, 则 $V=V^\pi$.
     \end{theorem}
@@ -380,15 +378,14 @@
     \end{equation}
     因此，$\sum_{t=0}^{\infty}\gamma^tr_t$ 是一个绝对收敛的序列，从而其期望存在且有界。
 
-    对于 $V^\pi(s)=\mathbb{E}^{\pi}[G_0\mid s_0=s]$ , 我们有
+    对于 $V^\pi(s)$, 我们有
     \begin{align}
     V^\pi(s)&= \mathbb{E}^{\pi}\left[r_0+\gamma G_1\mid s_0=s\right]\\
-    &=\mathbb{E}_{a\sim\pi(\cdot\mid s), (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[\mathbb{E}^\pi\left[r_0+\gamma G_1\mid s_0,a_0,r_0,s'\right]\right]\\
-    &= \mathbb{E}_{a\sim\pi(\cdot\mid s), (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[r_0+\gamma\mathbb{E}^\pi\left[ G_1\mid s_0,a_0,r_0,s'\right]\right]\\
-    &= \mathbb{E}_{a\sim\pi(\cdot\mid s), (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[r_0+\gamma\mathbb{E}^\pi\left[ G_1\mid s_1\right]\right]\\
-    &=\mathbb{E}_{a\sim\pi(\cdot\mid s'), (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[r_0+V^{\pi}(s')\right]
+    &=\mathbb{E}_{a\sim\pi(\cdot\mid s), (r_0,s')\sim p(\cdot,\cdot\mid s,a)}\left[\mathbb{E}^\pi\left[r_0+\gamma G_1\mid s,a,r_0,s'\right]\right]\\
+    &= \mathbb{E}_{a\sim\pi(\cdot\mid s), (r_0,s')\sim p(\cdot,\cdot\mid s,a)}\left[r_0+\gamma\mathbb{E}^\pi\left[ G_1\mid s,a,r_0,s'\right]\right]\\
+    &= \mathbb{E}_{a\sim\pi(\cdot\mid s), (r_0,s')\sim p(\cdot,\cdot\mid s,a)}\left[r_0+\gamma\mathbb{E}^\pi\left[ G_1\mid s'\right]\right]\\
+    &=\mathbb{E}_{a\sim\pi(\cdot\mid s'), (r_0,s')\sim p(\cdot,\cdot\mid s,a)}\left[r_0+V^{\pi}(s')\right]
     \end{align}
-    其中第 5 个等式为 Markov property.
     \end{proof}
 \end{frame}
 
@@ -397,7 +394,7 @@
     \begin{proof}
         最后，我们证明方程解的唯一性，假设存在函数 $V:\mathcal{S}^+\to\mathbb{R}$ 满足 Bellman equation. 我们定义 Bellman 算子 $\mathcal{T}^\pi$ 为
         \begin{equation}
-        (\mathcal{T}^\pi V)(s) := \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[r+\gamma V(s')\mid s\right]
+        (\mathcal{T}^\pi V)(s) := \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[r+\gamma V(s')\mid s\right]
         \end{equation}
 
         我们证明该算子是一个 contraction mapping, 考虑范数 $\|V\|_\infty = \max_{s\in\mathcal{S}} |V(s)|$, 我们有
