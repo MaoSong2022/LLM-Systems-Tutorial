@@ -192,12 +192,12 @@
         \centering
         \begin{tabular}{ccc}
             \toprule
-            \textbf{RL} & \textbf{LLM} & \textbf{Explanation}\\
+            \textbf{RL} & \textbf{LLM} \\
             \midrule
-            policy $\pi$        & LLM $\mathrm{LLM}(\cdot\mid y_{<i}, x)$ & - \\
-            initial state $s_0$ & prompt $x$            & - \\
-            action $a_t$        & current token $y_i$   & action space: the vocabulary of the LLM \\
-            state $s_t$         & context $(y_{<i}, x)$ & state space: the context of the LLM, huge \\
+            policy $\pi$        & LLM $\mathrm{LLM}(\cdot\mid y_{<i}, x)$ \\
+            initial state $s_0$ & prompt $x$           \\
+            action $a_t$        & current token $y_i$  \\
+            state $s_t$         & context $(y_{<i}, x)$ \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -212,12 +212,40 @@
     \end{block}
 \end{frame}
 
+\begin{frame}{Action Space and State Space for LLM}
+    action = token index $y_i$ $\Rightarrow$ Action space = vocabulary of the LLM
+
+    state = context $(y_{<i}, x)$ $\Rightarrow$ State space = all possible context of the LLM
+
+    \begin{table}[h!]
+        \small
+        \centering
+        \caption{主流大语言模型词表大小对比}
+        \label{tab:vocab-size}
+        \begin{tabular}{ccc}
+          \toprule
+          模型类别 & 模型名称 & 词表大小 \\
+          \midrule
+          \multirow{3}{*}{商业闭源} & GPT-5 & $\sim$200,000 \\
+                           & Claude Sonnet 3.7 & $\sim$100,000 \\
+                           & Gemini 3.0 & $\sim$256,144 \\
+          \midrule
+          \multirow{4}{*}{主流开源模型} & Qwen 3 & 151,936 \\
+                              & DeepSeek-V3 & 129,280 \\
+                              & MiniMax-M2.5 & 200,064 \\
+                              & GLM-5 & 154,880 \\
+          \bottomrule
+        \end{tabular}
+      \end{table}
+    LLM中，action space 非常大，state space 更大。
+\end{frame}
+
 \begin{frame}{Takeaway}
     \begin{itemize}
         \item RL的基础是MDP, 其核心假设是markov property, 即未来的状态和奖励只与当前状态和动作有关，与历史状态和动作无关。
         \item RL通过reward hypothesis, 将目标转化为最大化expected return.
         \item 从RL角度来看，LLM 本身是一个policy, 其初始状态为 prompt, 动作空间为 vocabulary 中的 token index, 奖励由多方面给定，environment 仅仅是对 token 进行简单拼接。
-
+        \item 虽然action space 和 state space 是离散的，但是其数量级非常大，因此我们通常使用函数逼近来近似 value function 和 Q function.
     \end{itemize}
 \end{frame}
 
