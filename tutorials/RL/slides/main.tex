@@ -130,11 +130,11 @@
 
 \begin{frame}{Trajectory}
     \begin{definition}[Trajectory]
-        Trajectory (rollout) 定义为：
+        Trajectory (rollout) 定义为agent与环境完整的一次交互过程，即：
         \begin{equation}
             \tau=(s_0, a_0, r_0, s_1, a_1, r_1, \ldots, s_{T-1}, a_{T-1}, r_{T-1}, s_T)
         \end{equation}
-        轨迹的概率分布写为如下形式：
+        轨迹的概率分布可以写成如下形式：
         \begin{equation}
             p(\tau\mid s_0, \pi, p) =  p_0(s_0)\prod_{i=1}^{T-1}\pi(a_t\mid s_t)p(r_t, s_{t+1}\mid r_t,s_t)
         \end{equation}
@@ -170,7 +170,9 @@
 
 \begin{frame}{Objective of RL}
     \begin{block}{Reward Hypothesis}
-        所有的目标都可以被描述为最大化 expected return.
+        \begin{center}
+        \textbf{所有的目标都可以被描述为最大化 expected return.}
+        \end{center}
     \end{block}
 
     \begin{block}{Objective}
@@ -182,14 +184,15 @@
 \end{frame}
 
 \begin{frame}{Connection with LLM}
+    \small
     LLM 的建模方式：
     \begin{equation}
         y_i \sim \mathrm{LLM}(\cdot\mid y_{<i}, x)
     \end{equation}
     其中 $x$ 是输入的prompt, $y_{<i}$ 是已经生成的部分，$y_i$ 是下一个要生成的token.
-
     \begin{table}[h!]
         \centering
+        \caption{LLM 与 RL 的对应关系}
         \begin{tabular}{ccc}
             \toprule
             \textbf{RL} & \textbf{LLM} \\
@@ -201,10 +204,8 @@
             \bottomrule
         \end{tabular}
     \end{table}
-
     \begin{block}{Remark}
         注意到我们并没有对 environment 和 reward 进行建模，我们可以这样进行理解:
-
         \begin{enumerate}
             \item LLM 中的 environment 仅仅是对 token 进行简单拼接, $s_{t+1} = \mathrm{concate}(y_i, s_t)$.
             \item reward 由 verifier, reward model (PRM, ORM) 或者 human feedback 给定
