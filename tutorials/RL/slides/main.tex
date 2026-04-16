@@ -94,7 +94,9 @@
 
 \begin{frame}{What is Reinforcement Learning?}
     \begin{block}{Core Idea}
-        RL的基本思想是：让agent通过与环境交互，学习到最优策略。
+        \begin{center}
+            \textbf{让agent通过与环境交互，学习到最优策略。}
+        \end{center}
     \end{block}
     \vspace{-0.3cm}
     \begin{figure}
@@ -106,44 +108,42 @@
     \end{figure}
     \vspace{-0.3cm}
     \begin{definition}[Reinforcement Learning]
-        强化学习是一个通过构建可以与环境进行交互的 agent 来解决控制和决策任务的学习框架，交互的方式为 agent 执行 action, 然后环境给予奖励
+        通过构建可以与环境进行交互的 agent 来解决控制和决策任务，交互的方式为 agent 执行 action, 然后环境给予反馈。
     \end{definition}
 \end{frame}
 
 \begin{frame}{Markov Decision Process (MDP)}
-    \begin{definition}{Markov Decision Process (MDP)}
-        马尔可夫决策过程（Markov Decision Process, MDP）是描述强化学习环境的数学模型，形式化为：
-    
+    \begin{definition}[Markov Decision Process (MDP)]
+        MDP 是描述强化学习的数学模型，形式化为：
         \begin{itemize}
             \item \textbf{状态 (State)}: $s_t \in \mathcal{S}$, $\mathcal{S}$ 为状态空间。
             \item \textbf{动作 (Action)}: $a_t \in \mathcal{A}, \mathcal{A}$ 为动作空间。
             \item \textbf{奖励 (Reward)}: $r_t \in \mathbb{R}$，环境对 agent 执行动作 $a_t$ 的反馈。
-            \item \textbf{终止时间}: $T$，且定义 $s_T = \langle\text{term}\rangle$ 为终止状态。
-            \item \textbf{初始状态分布}: $s_0 \sim p_0$.
+            \item \textbf{终止时间 (Terminal Time)}: $T$，且定义 $s_T = \langle\text{term}\rangle$ 为终止状态。
+            \item \textbf{初始状态分布 (Initial State)}: $s_0 \sim p_0$.
             \item \textbf{状态转移概率 (Transition Probability)}: $(r_t, s_{t+1}) \sim p(\cdot, \cdot \mid s_t, a_t)$.
-            \item \textbf{马尔可夫性 (Markov Property)}: \\
-                \begin{equation}
-                    p(s_{t+1} \mid s_t, a_t, \ldots) = p(s_{t+1} \mid s_t, a_t),\ p(r_t \mid s_t, a_t, \ldots) = p(r_t \mid s_t, a_t)
-                \end{equation}
+            \item \textbf{马尔可夫性 (Markov Property)}: $p(s_{t+1} \mid s_t, a_t, \ldots) = p(s_{t+1} \mid s_t, a_t),\ p(r_t \mid s_t, a_t, \ldots) = p(r_t \mid s_t, a_t)$.
         \end{itemize}
     \end{definition}
 \end{frame}
 
 
 \begin{frame}{Trajectory}
-    \textbf{轨迹（Trajectory）：} $\tau=(s_0, a_0, r_0, s_1, a_1, r_1, \ldots, s_{T-1}, a_{T-1}, r_{T-1}, s_T)$.
+    \begin{definition}[Trajectory]
+        Trajectory (rollout) 定义为：
+        \begin{equation}
+            \tau=(s_0, a_0, r_0, s_1, a_1, r_1, \ldots, s_{T-1}, a_{T-1}, r_{T-1}, s_T)
+        \end{equation}
+        轨迹的概率分布写为如下形式：
+        \begin{equation}
+            p(\tau\mid s_0, \pi, p) =  p_0(s_0)\prod_{i=1}^{T-1}\pi(a_t\mid s_t)p(r_t, s_{t+1}\mid r_t,s_t)
+        \end{equation}
+    \end{definition}
 
-    我们可以将轨迹写为如下形式
-
-    \begin{equation}
-        p(\tau\mid s_0, \pi, p) =  p_0(s_0)\prod_{i=1}^{T-1}\pi(a_t\mid s_t)p(r_t, s_{t+1}\mid r_t,s_t)
-    \end{equation}
-
-    可以看到，轨迹的概率分布是由初始状态分布，策略，以及环境模型共同决定的，我们可以将其记为 $\tau\sim(p_0,\pi, p)$.
     \begin{block}{Remark}
         \begin{itemize}
             \item 轨迹的概率分布是由初始状态分布，策略，以及环境模型共同决定的，我们可以将其记为 $\tau\sim(p_0,\pi, p)$.
-            \item 我们在这个tutorial中仅考虑有限horizon的MDP, 即 $T<\infty$.
+            \item 我们在这个tutorial中仅考虑finite horizon MDP, 即 $T<\infty$.
         \end{itemize}
     \end{block}
 \end{frame}
@@ -155,16 +155,17 @@
             R(\tau) = \sum_{t=0}^{T-1} \gamma^t r_t
         \end{equation}
         其中 $\gamma\in(0,1]$ 是 discount factor, 用于将未来的奖励折现到当前时刻。
+        
+        我们还会使用另一个符号 $G_0$ 来表示 expected return\footnote{后续我们将会交错使用 $G_0$ 和 $R(\tau)$ 来表示 expected return.}, 即 
+        \begin{equation}
+            G_0 = \sum_{t=0}^{T-1} \gamma^t r_t
+        \end{equation}
+        $G_0$ 存在如下递推关系
+        \begin{equation}
+            G_0 = r_0 + \gamma G_1
+        \end{equation}
     \end{definition}
-    一般我们会将 expected return 记为 $G_0$, 即
-    \begin{equation}
-        G_0 = \sum_{t=0}^{T-1} \gamma^t r_t
-    \end{equation}
-    $G_0$ 存在如下递推关系
-    \begin{equation}
-        G_0 = r_0 + \gamma G_1
-    \end{equation}
-    \footnotetext{后续我们将会交错使用 $G_0$ 和 $R(\tau)$ 来表示 expected return.}
+    
 \end{frame}
 
 \begin{frame}{Objective of RL}
@@ -219,7 +220,7 @@
     \begin{table}[h!]
         \small
         \centering
-        \caption{主流大语言模型词表大小对比}
+        \caption{主流大语言模型词表大小 $|V|$ 对比}
         \label{tab:vocab-size}
         \begin{tabular}{ccc}
           \toprule
@@ -236,7 +237,7 @@
           \bottomrule
         \end{tabular}
       \end{table}
-    LLM中，action space 非常大，state space 更大。
+    LLM中，action space ($|V|$) 非常大，state space ($|V|^i$) 更大。
 \end{frame}
 
 \begin{frame}{Takeaway}
