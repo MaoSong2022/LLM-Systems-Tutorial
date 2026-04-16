@@ -256,12 +256,12 @@
 \begin{frame}{Why Bellman Equation?}
     \begin{block}{Motivation}
         在强化学习中，我们关心的不是某一步立即得到的 reward，
-        而是 agent 从当前状态出发，在未来持续决策后能够获得的累计回报。
+        而是 agent 从当前状态出发，在未来持续决策后能够获得的expected return.
     \end{block}
     \begin{block}{Difficulty}
-        累计回报依赖于整条未来轨迹：
+        expected return 依赖于整条未来轨迹：
         后续会到达什么状态、采取什么动作、获得什么奖励，都是随机的。
-        因此直接分析 expected return 往往比较困难。
+        直接分析 expected return 往往比较困难。
     \end{block}
     \begin{block}{Core Idea}
         \textbf{将长期回报写成“当前一步的收益 + 下一状态的未来价值”}，把一个全局问题转化为递推问题。
