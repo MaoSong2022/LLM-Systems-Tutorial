@@ -41,7 +41,7 @@
     \tableofcontents[currentsection, hideothersubsections]
   \end{frame}
 }
-\setlength{\leftmargini}{1.2em}
+\setlength{\leftmargini}{3em}
 \setlength{\itemsep}{0.4em}
 \setlength{\parskip}{0.35em}
 \setbeamertemplate{itemize item}{\scriptsize\raise0.5pt\hbox{$\bullet$}}
@@ -622,8 +622,7 @@
     \begin{block}{Difficulty}
         这个问题本质上对应于求解策略 $\pi$ 的 value function $V^\pi$。
         虽然上一节已经知道 $V^\pi$ 满足 Bellman equation，
-        但当状态空间较大、动作空间较大，或者环境模型未知时，
-        直接进行精确求解往往计算代价较高。
+        但当状态空间较大、动作空间较大时，直接进行精确求解往往计算代价较高。
     \end{block}
     \begin{block}{Core Idea}
         \textbf{利用 Bellman equation、采样和函数逼近，
@@ -642,21 +641,23 @@
     \begin{block}{In RL}
         对于 value function
         \[
-            V^\pi(s)=\mathbb{E}^\pi\!\left[R(\tau)\mid s_0=s\right],
+            V^\pi(s_0)=\mathbb{E}^\pi\!\left[R(\tau)\mid s_0\right],
         \]
-        我们可以从 $s_0=s$ 出发，按照策略 $\pi$ 采样多条完整轨迹，
-        并用这些轨迹 return 的平均值来近似 $V^\pi(s)$。
+        从 $s_0$ 出发按照策略 $\pi$ 采样多条完整轨迹，
+        并用这些轨迹 return 的平均值来近似 $V^\pi(s_0)$.
     \end{block}
     \begin{block}{Remark}
-        Monte Carlo 方法的特点是：简单、直观、无需环境模型，
-        但必须等轨迹结束后才能得到一次完整的估计。
+        \begin{itemize}
+            \item[Pros]: 简单、直观、无需环境模型
+            \item[Cons]: 必须等轨迹结束后才能得到一次完整的估计
+        \end{itemize}
     \end{block}
 \end{frame}
 
 \begin{frame}{Monte Carlo}
     注意到
     \begin{equation}
-    V^\pi(s) = \mathbb{E}^\pi\left[R(\tau)\mid s_0=s\right]
+    V^\pi(s) = \mathbb{E}^\pi\left[R(\tau)\mid s_0\right]
     \end{equation}
 
     我们可以利用 Monte Carlo (MC) 方法来进行估计，即从 $s_0=s$ 出发，独立随机采样 $N$ 条轨迹
@@ -666,7 +667,7 @@
     \end{equation}
     然后我们使用样本平均来近似期望
     \begin{equation}
-        V^\pi(s) = \mathbb{E}^\pi\left[R(\tau)\mid s_0=s\right]\approx \frac{1}{N}\sum_{i=1}^NR(\tau^{(i)})
+        V^\pi(s) = \mathbb{E}^\pi\left[R(\tau)\mid s_0\right]\approx \frac{1}{N}\sum_{i=1}^NR(\tau^{(i)})
     \end{equation}
     这样，我们就得到了一个 Monte Carlo estimator 来估计 $V^\pi(s)$.
     如果 $\mathcal{S}$ 比较小，我们可以遍历 $s\in\mathcal{S}$ 来估计 $V^\pi$. 但是，如果 $\mathcal{S}$ 比较大，这种方法的计算复杂度较高。
@@ -679,7 +680,7 @@
 
     具体做法就是，我们需要使用神经网络 $V_\phi$ 来近似 $V^\pi$,
     \begin{equation}\label{eq:value-based-methods-objective}
-        \min_{\phi} \mathcal{L}(\phi) =\mathbb{E}\left[\frac12\left(V_\phi(s)-V^\pi(s)\right)^2\right]
+        \min_{\phi} \mathcal{L}(\phi) =\mathbb{E}\left[\frac12\left(V_\phi(s_t)-V^\pi(s_t)\right)^2\right]
     \end{equation}
     然后我们可以使用随机梯度下降法来更新参数 $\phi$.
 
@@ -689,10 +690,10 @@
 \begin{frame}{Gradient Calculation}
     对上面的目标函数~\eqref{eq:value-based-methods-objective}求导得到
     \begin{align}
-    \nabla_\phi \mathcal{L}(\phi) &= \mathbb{E}\left[\left(V_\phi(s)-V^\pi(s)\right)\nabla_\phi V_\phi(s)\right]\\
-    &= \mathbb{E}\left[\left(V_\phi(s)- \mathbb{E}^\pi\left[R(\tau)\mid s_0=s\right]\right)\nabla_\phi V_\phi(s)\right]\\
-    &=\mathbb{E}\left[\mathbb{E}^\pi\left[\left(V_\phi(s)- R(\tau)\right)\nabla_\phi V_\phi(s)\mid s_0=s\right]\right]\\
-    &= \mathbb{E}^\pi\left[\left(V_\phi(s)- R(\tau)\right)\nabla_\phi V_\phi(s)\mid s_0=s\right]
+    \nabla_\phi \mathcal{L}(\phi) &= \mathbb{E}\left[\left(V_\phi(s_t)-V^\pi(s_t)\right)\nabla_\phi V_\phi(s_t)\right]\\
+    &= \mathbb{E}\left[\left(V_\phi(s_t)- \mathbb{E}^\pi\left[G_t\mid s_t\right]\right)\nabla_\phi V_\phi(s_t)\right]\\
+    &=\mathbb{E}\left[\mathbb{E}^\pi\left[\left(V_\phi(s_t)- G_t\right)\nabla_\phi V_\phi(s_t)\mid s_t\right]\right]\\
+    &= \mathbb{E}^\pi\left[\left(V_\phi(s_t)- G_t\right)\nabla_\phi V_\phi(s)\mid s_t\right]
     \end{align}
     我们现在可以使用MC方法来估计梯度，即
     \begin{equation}
@@ -711,7 +712,7 @@
                 $t\gets t+1$\;
             }
             $T=t$\;
-            $g=\left(V_\phi(s_0)- R(\tau)\right)\nabla_\phi V_\phi(s_0)$\;
+            $g=\left(V_\phi(s_0)-G_t^{(i)}\right)\nabla_\phi V_\phi(s_0)$\;
             update $\phi$ using $g$ with an optimizer\;
         }
     \end{algorithm}
@@ -734,11 +735,9 @@
 \begin{frame}{Temporal Difference Learning}
     Temporal difference (TD) learning 通过相邻两步的转换关系来近似value function。注意到，
     \begin{equation}
-        V^\pi(s) =\mathbb{E}^\pi[r_0 + \gamma V^\pi(s_1)\mid s_0=s]
+        V^\pi(s_t) =\mathbb{E}^\pi[r_t + \gamma V^\pi(s_{t+1})\mid s_t]
     \end{equation}
-
     我们将
-
     \begin{equation}
         \overline{V}_t = r_t + \gamma V^\pi(s_{t+1})
     \end{equation}
