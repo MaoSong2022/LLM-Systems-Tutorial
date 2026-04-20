@@ -275,17 +275,17 @@
 \begin{definition}[Value function]
     Value function 定义为：
         \begin{equation}
-            V^{\pi}(s) = \mathbb{E}^{\pi}[G_0\mid s_0=s]
+            V^{\pi}(s_t) = \mathbb{E}^{\pi}[G_t\mid s_t]
         \end{equation}
-        value function 的具体含义为：\textbf{agent 从当前状态 $s$ 出发，一直遵循当前策略 $\pi$， 最后获取到的 expected return}.
+        value function 的具体含义为：\textbf{agent 从当前状态 $s_t$ 出发，一直遵循当前策略 $\pi$， 最后获取到的 expected return}.
 \end{definition}
 
 \begin{definition}[Q function]
     Q function 定义为：
     \begin{equation}
-        Q^{\pi}(s,a) = \mathbb{E}^{\pi}[G_0\mid s_0=s, a_0=a]
+        Q^{\pi}(s_t,a_t) = \mathbb{E}^{\pi}[G_t\mid s_t , a_t]
     \end{equation}
-    Q function 的具体含义为：\textbf{agent 从当前状态 $s$ 出发，先执行动作 $a$, 然后一直遵循当前策略 $\pi$, 最后获取到的 expected return}.
+    Q function 的具体含义为：\textbf{agent 从当前状态 $s_t$ 出发，先执行动作 $a_t$, 然后一直遵循当前策略 $\pi$, 最后获取到的 expected return}.
 \end{definition}
 
 \footnotetext{在不影响理解的情况下，我们省略 $\tau\sim (p_0,\pi, p)$ 的标记}
@@ -295,15 +295,15 @@
     \begin{block}{Relationship between value function and Q function}
         Value function 和 Q function 之间存在如下关系：
         \begin{equation}
-            V^{\pi}(s)  = \mathbb{E}_{a\sim \pi(\cdot\mid s)}[Q^{\pi}(s,a)]
+            V^{\pi}(s_t)  = \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t)}^{\pi}[Q^{\pi}(s_t,a_t)]
         \end{equation}
         即 value function 是 Q function 的期望。
     \end{block}
     \begin{proof}
         \begin{align}
-            V^{\pi}(s)  &= \mathbb{E}[G_0\mid s_0=s] \\
-            &= \sum_{a\in\mathcal{A}}\mathbb{E}\left[G_0\mid s_t=s, a_0=a\right]\pi(a\mid s_0=s)\\
-            &= \sum_{a\in\mathcal{A}}Q^{\pi}(s,a)\pi(a\mid s)= \mathbb{E}_{a\sim \pi(\cdot\mid s)}[Q^{\pi}(s,a)].
+            V^{\pi}(s_t)  &= \mathbb{E}^{\pi}[G_t\mid s_t] \\
+            &= \sum_{a\in\mathcal{A}}\mathbb{E}^{\pi}\left[G_t\mid s_t, a\right]\pi(a\mid s_t)\\
+            &= \sum_{a\in\mathcal{A}}Q^{\pi}(s_t,a)\pi(a\mid s_t)= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t)}^{\pi}[Q^{\pi}(s_t,a_t)].
         \end{align}
     \end{proof}
 \end{frame}
@@ -312,17 +312,19 @@
     \begin{block}{Iterative property}
         Value function 和 Q function 存在如下递推关系
         \begin{align}
-            V^\pi(s) &= \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}[r + \gamma V^\pi(s')\mid s]\\
-            Q^\pi(s,a) &= \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a),\ a'\sim \pi(\cdot\mid s')}[r + \gamma Q^\pi(s',a')\mid s,a]
+            V^\pi(s_t) &= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}[r_t + \gamma V^\pi(s_{t+1})\mid s_t]\\
+            Q^\pi(s_t,a_t) &= \mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t),\ a_{t+1}\sim \pi(\cdot\mid s_{t+1})}[r_t + \gamma Q^\pi(s_{t+1},a_{t+1})\mid s_t,a_t]
         \end{align}
     \end{block}
     \begin{proof}
+        对于 value function, 我们有
         \begin{align}
-            V^{\pi}(s) &= \mathbb{E}^{\pi}[r_0+\gamma G_1\mid s_0=s]\\
-            &= \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[\mathbb{E}^\pi[r + \gamma G_1\mid s,a,r,s']\mid s\right]\\
-            &\overset{\text{Markov}}{=} \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r + \gamma \mathbb{E}^\pi[G_1\mid s',a]\mid s\right]\\
-            &= \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r + \gamma V^\pi[s')\mid s\right]
+            V^{\pi}(s_t) &= \mathbb{E}^{\pi}[r_t+\gamma G_{t+1}\mid s_t]\\
+            &= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[\mathbb{E}^\pi[r_t + \gamma G_{t+1}\mid s_t,a_t,r_t,s_{t+1}]\mid s_t\right]\\
+            &= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t + \gamma \mathbb{E}^\pi[G_{t+1}\mid s_{t+1}]\mid s_t\right]\\
+            &= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t + \gamma V^\pi[s_{t+1}]\mid s_t\right]
         \end{align}
+        Q function 的证明类似，我们这里略过。
     \end{proof}
 \end{frame}
 
@@ -330,11 +332,11 @@
 \begin{frame}{Bellman Equation (Value function)}
     \begin{theorem}[Bellman Equation]
         令 $\pi$ 为一个策略，假设 $\gamma\in(0,1)$, $|\mathcal{S}|<\infty$ 以及 $|r|\leq R<\infty, \mathrm{a.s.}$\footnote{$\mathrm{a.s.}$ 表示 almost surely}. 
-        那么 $\pi$ 对应的 value function $V^\pi:\mathcal{S}^+\to\mathbb{R}$ 存在，且满足 Bellman equation:
+        那么 $\pi$ 对应的 value function $V^\pi:\mathcal{S}\to\mathbb{R}$ 存在，且满足 Bellman equation:
         \begin{equation}
-        V^\pi(s) = \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}^{\pi}\left[r_0+\gamma V^\pi(s')\mid s_0=s\right]
+        V^\pi(s_t) = \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}^{\pi}\left[r_t+\gamma V^\pi(s_{t+1})\mid s_t\right]
         \end{equation}
-        反之，如果存在函数 $V:\mathcal{S}^+\to\mathbb{R}$ 满足 Bellman equation, 则 $V=V^\pi$.
+        反之，如果存在函数 $V:\mathcal{S}\to\mathbb{R}$ 满足 Bellman equation, 则 $V=V^\pi$.
     \end{theorem}
 \end{frame}
 
@@ -374,19 +376,12 @@
 
 \begin{frame}{Bellman Equation Theorem--Proof}
     \begin{proof}
-    由 $V^\pi$ 定义，我们有
-    \begin{equation}
-        \left|\sum_{t=0}^{\infty}\gamma^tr_t\right|\leq \sum_{t=0}^\infty \gamma^t R=\frac{R}{1-\gamma}<\infty
-    \end{equation}
-    因此，$\sum_{t=0}^{\infty}\gamma^tr_t$ 是一个绝对收敛的序列，从而其期望存在且有界。
-
     对于 $V^\pi(s)$, 我们有
     \begin{align}
-    V^\pi(s)&= \mathbb{E}^{\pi}\left[r_0+\gamma G_1\mid s_0=s\right]\\
-    &=\mathbb{E}_{a\sim\pi(\cdot\mid s), (r_0,s')\sim p(\cdot,\cdot\mid s,a)}\left[\mathbb{E}^\pi\left[r_0+\gamma G_1\mid s,a,r_0,s'\right]\right]\\
-    &= \mathbb{E}_{a\sim\pi(\cdot\mid s), (r_0,s')\sim p(\cdot,\cdot\mid s,a)}\left[r_0+\gamma\mathbb{E}^\pi\left[ G_1\mid s,a,r_0,s'\right]\right]\\
-    &= \mathbb{E}_{a\sim\pi(\cdot\mid s), (r_0,s')\sim p(\cdot,\cdot\mid s,a)}\left[r_0+\gamma\mathbb{E}^\pi\left[ G_1\mid s'\right]\right]\\
-    &=\mathbb{E}_{a\sim\pi(\cdot\mid s'), (r_0,s')\sim p(\cdot,\cdot\mid s,a)}\left[r_0+V^{\pi}(s')\right]
+    V^\pi(s_t)&= \mathbb{E}^{\pi}\left[r_t+\gamma G_{t+1}\mid s_t\right]\\
+    &=\mathbb{E}_{a_t\sim\pi(\cdot\mid s_t), (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[\mathbb{E}^\pi\left[r_t+\gamma G_{t+1}\mid s_t,a_t,r_t,s_{t+1}\right]\right]\\
+    &= \mathbb{E}_{a_t\sim\pi(\cdot\mid s_t), (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma\mathbb{E}^\pi\left[ G_{t+1}\mid s_{t+1}\right]\right]\\
+    &= \mathbb{E}_{a_t\sim\pi(\cdot\mid s_t), (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V^{\pi}(s_{t+1})\right]
     \end{align}
     \end{proof}
 \end{frame}
@@ -394,19 +389,19 @@
 \begin{frame}{Bellman Equation Theorem--Proof}
     \small
     \begin{proof}
-        最后，我们证明方程解的唯一性，假设存在函数 $V:\mathcal{S}^+\to\mathbb{R}$ 满足 Bellman equation. 我们定义 Bellman 算子 $\mathcal{T}^\pi$ 为
+        我们再证明方程解的唯一性，假设存在函数 $V:\mathcal{S}\to\mathbb{R}$ 满足 Bellman equation. 我们定义 Bellman 算子 $\mathcal{T}^\pi$ 为
         \begin{equation}
-        (\mathcal{T}^\pi V)(s) := \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[r+\gamma V(s')\mid s\right]
+        (\mathcal{T}^\pi V)(s_t) := \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V(s_{t+1})\mid s_t\right]
         \end{equation}
 
         我们证明该算子是一个 contraction mapping, 考虑范数 $\|V\|_\infty = \max_{s\in\mathcal{S}} |V(s)|$, 我们有
         \begin{align}
-        \left|(\mathcal{T}^\pi V_1)(s)-(\mathcal{T}^\pi V_2)(s)\right| &= \left|\mathbb{E}_{a\sim\pi(\cdot\mid s'), (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left[\gamma V_1^{\pi}(s')-\gamma V_2^{\pi}(s')\right]\right|\\
-        &\leq \gamma \mathbb{E}_{a\sim\pi(\cdot\mid s'), (r,s')\sim p(\cdot,\cdot\mid s,a_0)}\left|V_1^{\pi}(s')-V_2^{\pi}(s')\right|\\
-        &\leq \gamma \max_{s''\in\mathcal{S}}\left|V_1(s'')-V_2(s'')\right|= \gamma \left\|V_1-V_2\right\|_\infty
+        \left|(\mathcal{T}^\pi V_1)(s_t)-(\mathcal{T}^\pi V_2)(s_t)\right| &= \left|\mathbb{E}_{a_t\sim\pi(\cdot\mid s_t), (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[\gamma V_1^{\pi}(s_{t+1})-\gamma V_2^{\pi}(s_{t+1})\right]\right|\\
+        &\leq \gamma \mathbb{E}_{a_t\sim\pi(\cdot\mid s_t), (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left|V_1^{\pi}(s_{t+1})-V_2^{\pi}(s_{t+1})\right|\\
+        &\leq \gamma \max_{s\in\mathcal{S}}\left|V_1(s)-V_2(s)\right|= \gamma \left\|V_1-V_2\right\|_\infty
         \end{align}
 
-        上式对于任意 $s\in\mathcal{S}$ 都成立，因此
+        上式对于任意 $s_t\in\mathcal{S}$ 都成立，因此
         \begin{equation}
         \left\|\mathcal{T}^\pi V_1-\mathcal{T}^\pi V_2\right\|_\infty \leq \gamma \left\|V_1-V_2\right\|_\infty
         \end{equation}
@@ -419,11 +414,11 @@
 \begin{frame}{Bellman Equation (Q function)}
     \begin{theorem}[Bellman Equation]
         令 $\pi$ 为一个策略，假设 $\gamma\in(0,1)$, $|\mathcal{S}|<\infty$ $|\mathcal{A}|<\infty$ 以及 $|r|\leq R<\infty, \mathrm{a.s.}$. 
-        那么 $\pi$ 对应的 Q-function $Q^\pi:\mathcal{S}^+\times\mathcal{A}\to\mathbb{R}$ 存在，且满足 Bellman equation:
+        那么 $\pi$ 对应的 Q-function $Q^\pi:\mathcal{S}\times\mathcal{A}\to\mathbb{R}$ 存在，且满足 Bellman equation:
         \begin{equation}
-            Q^\pi(s, a) = \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a),\ a'\sim \pi(\cdot\mid s')}\left[r+\gamma Q(s', a')\mid s, a\right]
+            Q^\pi(s_t, a_t) = \mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t),\ a_{t+1}\sim \pi(\cdot\mid s_{t+1})}\left[r_t+\gamma Q(s_{t+1}, a_{t+1})\mid s_t, a_t\right]
         \end{equation}
-        反之，如果存在函数 $Q:\mathcal{S}^+\times\mathcal{A}\to\mathbb{R}$ 满足 Bellman equation, 则 $Q=Q^\pi$.
+        反之，如果存在函数 $Q:\mathcal{S}\times\mathcal{A}\to\mathbb{R}$ 满足 Bellman equation, 则 $Q=Q^\pi$.
     \end{theorem}
     \begin{proof}
         证明与 value function 的证明基本类似，我们这里略过。
@@ -435,7 +430,7 @@
         如果策略 $\pi^*$ 满足
 
         \begin{equation}
-            V^{\pi^*}(s)\geq V^{\pi}(s), \forall s\in\mathcal{S}^+, \forall \pi
+            V^{\pi^*}(s_t)\geq V^{\pi}(s_t), \forall s_t\in\mathcal{S}, \forall \pi
         \end{equation}
 
         则我们称策略 $\pi^*$ 是 \textbf{optimal policy}. 
@@ -451,18 +446,18 @@
     \begin{block}{Relationship between $V^*$ and $Q^*$}
         $V^*$ 与 $Q^*$ 之间存在如下关系
         \begin{equation}
-            V^*(s) = \max_{a\in\mathcal{A}} Q^*(s, a)
+            V^*(s_t) = \max_{a\in\mathcal{A}} Q^*(s_t, a)
         \end{equation}
     \end{block}
 
     \begin{proof}
         我们先证明左边小于右边，再证明右边小于左边。首先，
         \begin{equation}
-            V^*(s) =\mathbb{E}_{a_0\sim \pi^*(\cdot\mid s_0)}[Q^*(s,a)]\leq \mathbb{E}_{a_0\sim \pi^*(\cdot\mid s_0)}[\max_{a\sim\pi^*}Q^*(s,a)] =  \max_{a\sim\pi^*} Q^*(s, a)
+            V^*(s_t) =\mathbb{E}_{a\sim \pi^*(\cdot\mid s_t)}[Q^*(s_t,a)]\leq \mathbb{E}_{a\sim \pi^*(\cdot\mid s_t)}[\max_{a\in\mathcal{A}}Q^*(s_t,a)] =  \max_{a\in\mathcal{A}} Q^*(s_t, a)
         \end{equation}
         其次，令 $a^*\in\arg\max_{a}Q^*(s,a)$, 令策略 $\pi'$ 为确定性策略 $\pi'(a^*\mid s)=1$, 则
         \begin{equation}
-            \max_a Q^*(s,a^*) = Q^{\pi'}(s,a^*)=V^{\pi'}(s)\leq V^*(s)
+            \max_{a\in\mathcal{A}} Q^*(s_t,a^*) = Q^{\pi'}(s_t,a^*)=V^{\pi'}(s_t)\leq V^*(s_t)
         \end{equation}
         这样，我们就证明了上面的等式。
     \end{proof}
@@ -472,15 +467,15 @@
 \begin{frame}{Bellman Optimality Equation Theorem}
 \begin{theorem}[Bellman Optimality Equation]
     假设 $\gamma\in(0,1)$, $|\mathcal{S}|<\infty$ $|\mathcal{A}|<\infty$ 以及 $|r|\leq R<\infty, \mathrm{a.s.}$.  
-    那么 optimal value function $V^*:\mathcal{S}^+\to\mathbb{R}$ 存在，且满足 Bellman optimality equation:
+    那么 optimal value function $V^*:\mathcal{S}\to\mathbb{R}$ 存在，且满足 Bellman optimality equation:
     \begin{equation}
-        V^*(s) = \max_{a\in\mathcal{A}}\mathbb{E}_{\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V^*(s')\mid s, a\right]
+        V^*(s_t) = \max_{a\in\mathcal{A}}\mathbb{E}_{\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V^*(s_{t+1})\mid s_t, a_t\right]
     \end{equation}
 
-    反之，如果存在函数 $V:\mathcal{S}^+\to\mathbb{R}$ 满足 Bellman optimality equation, 则 $V=V^*$.
+    反之，如果存在函数 $V:\mathcal{S}\to\mathbb{R}$ 满足 Bellman optimality equation, 则 $V=V^*$.
     最后，我们可以给出一个 optimal deterministic policy:
     \begin{equation}
-        \pi^*(s) = \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V^*(s')\mid s, a\right]=\arg\max_{a\in\mathcal{A}} Q^*(s,a)
+        \pi^*(s_t) = \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V^*(s_{t+1})\mid s_t, a_t\right]=\arg\max_{a\in\mathcal{A}} Q^*(s_t,a)
     \end{equation}
 \end{theorem}
 \end{frame}
@@ -488,27 +483,34 @@
 \begin{frame}{Bellman Optimality Equation Theorem--Proof}
     \tiny
     \begin{lemma}\label{lemma:bellman-optimality-equation-theorem-proof-1}
-        令 $\pi$ 为一个策略， $\mathcal{T}^\pi$ 和 $\mathcal{T}^*$ 分别是 Bellman operator 和 Bellman optimality operator. 对任意 $V:\mathcal{S}^+\to\mathbb{R}$, 我们有
+        令 $\pi$ 为一个策略， $\mathcal{T}^\pi$ 和 $\mathcal{T}^*$ 分别是 Bellman operator 和 Bellman optimality operator. 对任意 $V:\mathcal{S}\to\mathbb{R}$, 我们有
         \begin{equation}
-            \mathcal{T}^\pi(V) \leq \mathcal{T}^*(V)
+            \mathcal{T}^{\pi}V(s) \leq \mathcal{T}^*V(s), \forall s\in\mathcal{S}
         \end{equation}
-        进一步，对任意 $U:\mathcal{S}^+\to\mathbb{R}$, $V:\mathcal{S}^+\to\mathbb{R}$, 如果 $U\leq V$, 则
+        进一步，对任意 $U:\mathcal{S}\to\mathbb{R}$, $V:\mathcal{S}\to\mathbb{R}$, 如果 $U\leq V$, 则
         \begin{equation}
-            \mathcal{T}^*(U) \leq \mathcal{T}^*(V)
+            \mathcal{T}^*U(s) \leq \mathcal{T}^*V(s), \forall s\in\mathcal{S}
         \end{equation}
     \end{lemma}
+
     \begin{proof}
+        首先，我们有
         \begin{align*}
-        \mathcal{T}^\pi(V)(s) &=  \mathbb{E}_{a\sim \pi(\cdot\mid s),\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V(s')\mid s\right]\leq \mathbb{E}_{a\sim \pi(\cdot\mid s)}\left[\max_{a'} \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a')}\left[r+\gamma V(s')\mid s\right]\right]\\
-        &= \max_{a'} \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a')}\left[r+\gamma V(s')\mid s\right]= \mathcal{T}^*(V)
+            \mathcal{T}^{\pi} V(s_t) &= \mathbb{E}_{a_t \sim \pi(\cdot \mid s_t), (r_t, s_{t+1}) \sim p(\cdot \mid s_t, a_t)} [r_t + \gamma V(s_{t+1})] 
+            \leq \mathbb{E}_{a_t \sim \pi(\cdot \mid s_t)} \left[ \max_{a \in \mathcal{A}} \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a)} [r_t + \gamma V(s_{t+1})] \right] \\
+            &= \max_{a \in \mathcal{A}} \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a)} [r_t + \gamma V(s_{t+1})] 
+            = \mathcal{T}^* V(s_t)
         \end{align*}
-        其次，令 $a^*\in\arg\max_{a}\mathbb{E}[r+\gamma U(s')]$, 那么
+        其次，假设 $U(s) \leq V(s)$ 对所有 $s$ 成立。令 $a^* \in \arg\max_{a} \mathbb{E} [r_t + \gamma U(s_{t+1}) \mid s_t, a]$，那么：
         \begin{align*}
-        \mathcal{T}^*(U)(s) &=  \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a')}\left[r+\gamma U(s')\mid s\right]\leq \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a'))}\left[r+\gamma V(s')\mid s\right]\\
-        &\leq \max_a\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a')}\left[r+\gamma V(s')\mid s\right]= \mathcal{T}^*(V)
+            \mathcal{T}^* U(s_t) &= \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a^*)} [r_t + \gamma U(s_{t+1})] 
+            \leq \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a^*)} [r_t + \gamma V(s_{t+1})] \\
+            &\leq \max_{a \in \mathcal{A}} \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a)} [r_t + \gamma V(s_{t+1})] 
+            = \mathcal{T}^* V(s_t)
         \end{align*}
         证毕。
     \end{proof}
+
 \end{frame}
 
 \begin{frame}{Bellman Optimality Equation Theorem--Proof}
@@ -516,16 +518,16 @@
     \begin{proof}
         我们首先证明存在性，我们定义
         \begin{equation}
-            (\mathcal{T}^* V)(s) := \max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[r+\gamma V(s')\mid s, a\right]
+            (\mathcal{T}^* V)(s_t) := \max_{a\in\mathcal{A}}\mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s,a)}\left[r_t+\gamma V(s_{t+1})\mid s_t, a_t\right]
         \end{equation}
 
         我们证明 $\mathcal{T}^*V$ 是一个 contraction mapping.
         \begin{align}
-        \left|(\mathcal{T}^* V_1)(s)-(\mathcal{T}^* V_2)(s)\right| &= \left|\max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[r+\gamma V_1(s')\mid s, a\right]- \max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a_0))}\left[r+\gamma V_2(s')\mid s, a\right]\right|\\
-        &\leq \max_{a\in\mathcal{A}}\left|\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V_1(s')\mid s, a\right]- \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V_2(s')\mid s, a\right]\right|\\
-        &= \gamma  \max_{a\in\mathcal{A}}\left|\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[V_1(s')-V_2(s')\mid s,a\right]\right|\\
-        &\leq \gamma  \max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[\left|V_1(s')-V_2(s')\right|\mid s,a\right]\\
-        &\leq \gamma  \max_{a\in\mathcal{A}}\max_{s''\in\mathcal{S}}\left|V_1(s'')-V_2(s'')\right|= \gamma \left\|V_1-V_2\right\|_\infty
+        \left|(\mathcal{T}^* V_1)(s_t)-(\mathcal{T}^* V_2)(s_t)\right| &= \left|\max_{a\in\mathcal{A}}\mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V_1(s_{t+1})\mid s_t, a_t\right]- \max_{a\in\mathcal{A}}\mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V_2(s_{t+1})\mid s_t, a_t\right]\right|\\
+        &\leq \max_{a\in\mathcal{A}}\left|\mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V_1(s_{t+1})\mid s_t, a_t\right]- \mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V_2(s_{t+1})\mid s_t, a_t\right]\right|\\
+        &= \gamma  \max_{a\in\mathcal{A}}\left|\mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[V_1(s_{t+1})-V_2(s_{t+1})\mid s_t, a_t\right]\right|\\
+        &\leq \gamma  \max_{a\in\mathcal{A}}\mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[\left|V_1(s_{t+1})-V_2(s_{t+1})\right|\mid s_t, a_t\right]\\
+        &\leq \gamma  \max_{a\in\mathcal{A}}\max_{s\in\mathcal{S}}\left|V_1(s)-V_2(s)\right|= \gamma \left\|V_1-V_2\right\|_\infty
         \end{align}
         因此，我们有
         \begin{equation}
@@ -541,17 +543,17 @@
     \begin{proof}
         根据不动点定理，$\mathcal{T}^*$ 存在一个不动点，我们将其记为 $V^*$. 接下来，我们定义 $\pi^*$ 为
         \begin{equation}
-        \pi^*(s) = \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V^*(s')\mid s, a\right]
+        \pi^*(s_t) = \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V^*(s_{t+1})\mid s_t, a_t\right]
         \end{equation}
         此时，我们有
         \begin{align}
-            V^*(s) &= \mathbb{E}^{\pi^*}\left[r_0+\gamma V^*(s_1)\mid s\right]\\
-            &= \mathbb{E}^{\pi^*}\left[r_0+\gamma \mathbb{E}^{\pi^*}\left[r_1+\gamma V^*(s_2)\mid s_1\right]\mid s\right]\\
-            &= \mathbb{E}^{\pi^*}\left[\mathbb{E}^{\pi^*}\left[r_0+\gamma (r_1+\gamma V^*(s_2))\mid s_1\right]\mid s\right]\\
-            &= \mathbb{E}^{\pi^*}\left[r_0+\gamma r_1+\gamma^2 V^*(s_2)\mid s\right]\\
-            &= \mathbb{E}^{\pi^*}\left[r_0+\gamma r_1+\gamma^2r_2+\cdots\mid s\right]= V^{\pi^*}(s)
+            V^*(s_t) &= \mathbb{E}^{\pi^*}\left[r_t+\gamma V^*(s_{t+1})\mid s_t\right]\\
+            &= \mathbb{E}^{\pi^*}\left[r_t+\gamma \mathbb{E}^{\pi^*}\left[r_{t+1}+\gamma V^*(s_{t+2})\mid s_{t+1}\right]\mid s_t\right]\\
+            &= \mathbb{E}^{\pi^*}\left[\mathbb{E}^{\pi^*}\left[r_t+\gamma (r_{t+1}+\gamma V^*(s_{t+2}))\mid s_{t+1}\right]\mid s_t\right]\\
+            &= \mathbb{E}^{\pi^*}\left[r_t+\gamma r_{t+1}+\gamma^2 V^*(s_{t+2})\mid s_t\right]\\
+            &= \mathbb{E}^{\pi^*}\left[r_t+\gamma r_{t+1}+\gamma^2r_{t+2}+\cdots\mid s_t\right]= V^{\pi^*}(s_t)
         \end{align}
-        即 $V^*=V^{\pi^*}$. 现在我们证明 $\pi^*$ 是最优策略，令 $\pi$ 为任意一个策略，我们有
+        即 $V^*=V^{\pi^*}$, 这里第四个等式使用了 Law of Total Expectation~\ref{law-of-total-expectation}. 现在我们证明 $\pi^*$ 是最优策略，令 $\pi$ 为任意一个策略，我们有
         \begin{equation}
         V^\pi
         \overset{\text{Lemma~\ref{lemma:bellman-optimality-equation-theorem-proof-1}}}{\le}
@@ -569,11 +571,11 @@
 \begin{frame}{Bellman Optimality Equation Theorem (Q-function version)}
     \begin{theorem}[Bellman Optimality Equation (Q-function version)]
         假设 $\gamma\in(0,1)$, $|\mathcal{S}|<\infty$ $|\mathcal{A}|<\infty$ 以及 $|r|\leq R<\infty, \mathrm{a.s.}$.  
-        那么 optimal Q-function $Q^*:\mathcal{S}^+\times\mathcal{A}\to\mathbb{R}$ 存在，且满足 **Bellman optimality equation**:
+        那么 optimal Q-function $Q^*:\mathcal{S}\times\mathcal{A}\to\mathbb{R}$ 存在，且满足 **Bellman optimality equation**:
         \begin{equation}
-        Q^*(s, a) = \mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma \max_{a'\in\mathcal{A}}Q^*(s', a')\mid s, a\right]
+        Q^*(s_t, a_t) = \mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma \max_{a'\in\mathcal{A}}Q^*(s_{t+1}, a')\mid s_t, a_t\right]
         \end{equation}
-        反之，如果存在函数 $Q:\mathcal{S}^+\times\mathcal{A}\to\mathbb{R}$ 满足 Bellman optimality equation, 则 $Q=Q^*$.
+        反之，如果存在函数 $Q:\mathcal{S}\times\mathcal{A}\to\mathbb{R}$ 满足 Bellman optimality equation, 则 $Q=Q^*$.
     \end{theorem}
     \begin{proof}
         证明与 Bellman Optimality Equation Theorem 类似，这里不再赘述。
@@ -583,7 +585,7 @@
 \begin{frame}{Value Iteration Algorithm}
     根据BOE定理的证明，我们知道
     \begin{equation}
-        (\mathcal{T}^* V)(s) := \max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V(s')\mid s, a\right]
+        (\mathcal{T}^* V)(s_t) := \max_{a\in\mathcal{A}}\mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V(s_{t+1})\mid s_t, a_t\right]
     \end{equation}
     是一个 contraction mapping, 因此我们可以构造函数序列
     \begin{equation}
@@ -592,8 +594,8 @@
     由不动点定理，我们知道这个序列收敛到 $V^*$. 这样，我们就得到了value iteration algorithm:
     \begin{align}
         V^{k+1}&=\mathcal{T}^* V^k\\
-        V^{k+1}(s) &= \max_{a\in\mathcal{A}}\mathbb{E}_{(r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V^k(s')\mid s, a\right]\\
-        \pi^{k+1}(s) &= \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r,s')\sim p(\cdot,\cdot\mid s,a)}\left[r+\gamma V^k(s')\mid s, a\right]
+        V^{k+1}(s_t) &= \max_{a\in\mathcal{A}}\mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V^k(s_{t+1})\mid s_t, a_t\right]\\
+        \pi^{k+1}(s_t) &= \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V^k(s_{t+1})\mid s_t, a_t\right]
     \end{align}
 \end{frame}
 
@@ -921,7 +923,12 @@
 \appendix
 
 \begin{frame}[label=law-of-total-expectation]{Law of Total Expectation}
-    TODO
+    \begin{block}{Law of Total Expectation}
+        给定随机变量 $X$ 和 $Y$, 如果 $X$ 和 $Y$ 是独立的，则
+        \begin{equation}
+            \mathbb{E}[\mathbb{E}[X|Y]] = \mathbb{E}[X]
+        \end{equation}
+    \end{block}
 \end{frame}
 
 \begin{frame}[label=fixed-point-theorem]{Fixed Point Theorem*}
