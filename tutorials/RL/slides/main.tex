@@ -266,7 +266,7 @@
     \begin{block}{Core Idea}
         \textbf{将长期回报写成“当前一步的收益 + 下一状态的未来价值”}，把一个全局问题转化为递推问题。
         \begin{equation}
-            \text{long-term value} = \text{immediate reward} + \text{discounted future value}
+            \text{long-term return} = \text{immediate reward} + \text{discounted future return}.
         \end{equation}
     \end{block}
 \end{frame}
@@ -300,10 +300,11 @@
         即 value function 是 Q function 的期望。
     \end{block}
     \begin{proof}
+        证明用到了条件期望的定义：
         \begin{align}
             V^{\pi}(s_t)  &= \mathbb{E}^{\pi}[G_t\mid s_t] \\
-            &= \sum_{a\in\mathcal{A}}\mathbb{E}^{\pi}\left[G_t\mid s_t, a\right]\pi(a\mid s_t)\\
-            &= \sum_{a\in\mathcal{A}}Q^{\pi}(s_t,a)\pi(a\mid s_t)= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t)}^{\pi}[Q^{\pi}(s_t,a_t)].
+            &= \sum_{a_t\in\mathcal{A}}\mathbb{E}^{\pi}\left[G_t\mid s_t, a_t\right]\pi(a_t\mid s_t)\\
+            &= \sum_{a_t\in\mathcal{A}}Q^{\pi}(s_t,a_t)\pi(a_t\mid s_t)= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t)}^{\pi}[Q^{\pi}(s_t,a_t)].
         \end{align}
     \end{proof}
 \end{frame}
@@ -312,7 +313,7 @@
     \begin{block}{Iterative property}
         Value function 和 Q function 存在如下递推关系
         \begin{align}
-            V^\pi(s_t) &= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}[r_t + \gamma V^\pi(s_{t+1})\mid s_t]\\
+            V^\pi(s_t) &= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}[r_t + \gamma V^\pi(s_{t+1})\mid s_t] \label{eq:value-function-iterative-property}\\
             Q^\pi(s_t,a_t) &= \mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t),\ a_{t+1}\sim \pi(\cdot\mid s_{t+1})}[r_t + \gamma Q^\pi(s_{t+1},a_{t+1})\mid s_t,a_t]
         \end{align}
     \end{block}
@@ -324,12 +325,12 @@
             &= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t + \gamma \mathbb{E}^\pi[G_{t+1}\mid s_{t+1}]\mid s_t\right]\\
             &= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t + \gamma V^\pi[s_{t+1}]\mid s_t\right]
         \end{align}
-        Q function 的证明类似，我们这里略过。
+        这里用到了 Law of Total Expectation (Frame~\ref{law-of-total-expectation})，Q function 的证明类似，我们这里略过。
     \end{proof}
 \end{frame}
 
 
-\begin{frame}{Bellman Equation (Value function)}
+\begin{frame}{Bellman Equation Theorem (Value function)}
     \begin{theorem}[Bellman Equation]
         令 $\pi$ 为一个策略，假设 $\gamma\in(0,1)$, $|\mathcal{S}|<\infty$ 以及 $|r|\leq R<\infty, \mathrm{a.s.}$\footnote{$\mathrm{a.s.}$ 表示 almost surely}. 
         那么 $\pi$ 对应的 value function $V^\pi:\mathcal{S}\to\mathbb{R}$ 存在，且满足 Bellman equation:
@@ -342,7 +343,7 @@
 
 \begin{frame}{Fixed Point Theorem*}
     \begin{definition}[Fix Point]
-        对于函数 $f:\mathbb{R}^n\to\mathbb{R}^n$, 如果一个点 $x^*\in\mathbb{R}^n$ 满足
+        对于函数 $f:\mathbb{R}^n\to\mathbb{R}^n$, 如果存在一个点 $x^*\in\mathbb{R}^n$ 满足
         \begin{equation}
         f(x^*)=x^*
         \end{equation}
@@ -352,7 +353,7 @@
     \begin{definition}[Contraction mapping]
         对于函数 $f:\mathbb{R}^n\to\mathbb{R}^n$, 如果存在 $\gamma\in(0,1)$ 满足
         \begin{equation}
-            \|f(x_1)-f(x_2)\| \leq \gamma \|x_1-x_2\|,\forall\ x_1,x_2\in\mathbb{R}^n
+            \|f(x_1)-f(x_2)\| \leq \gamma \|x_1-x_2\|,\forall x_1,x_2\in\mathbb{R}^n
         \end{equation}
         则我们称 $f$ 是一个 \textbf{contraction mapping}. 这里 $\|\cdot\|$ 是一个 matrix norm.
     \end{definition}
@@ -389,6 +390,7 @@
 \begin{frame}{Bellman Equation Theorem--Proof}
     \small
     \begin{proof}
+        由 \eqref{eq:value-function-iterative-property} 我们可以得到 value function 的等式成立。
         我们再证明方程解的唯一性，假设存在函数 $V:\mathcal{S}\to\mathbb{R}$ 满足 Bellman equation. 我们定义 Bellman 算子 $\mathcal{T}^\pi$ 为
         \begin{equation}
         (\mathcal{T}^\pi V)(s_t) := \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V(s_{t+1})\mid s_t\right]
@@ -400,13 +402,11 @@
         &\leq \gamma \mathbb{E}_{a_t\sim\pi(\cdot\mid s_t), (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left|V_1^{\pi}(s_{t+1})-V_2^{\pi}(s_{t+1})\right|\\
         &\leq \gamma \max_{s\in\mathcal{S}}\left|V_1(s)-V_2(s)\right|= \gamma \left\|V_1-V_2\right\|_\infty
         \end{align}
-
         上式对于任意 $s_t\in\mathcal{S}$ 都成立，因此
         \begin{equation}
         \left\|\mathcal{T}^\pi V_1-\mathcal{T}^\pi V_2\right\|_\infty \leq \gamma \left\|V_1-V_2\right\|_\infty
         \end{equation}
         由于 $\gamma < 1$, 从而 $\mathcal{T}^\pi$ 是一个 contraction mapping.
-
         根据不动点定理，已知 $V^\pi$ 是一个不动点，而不动点唯一，因此我们有 $V=V^\pi$.
     \end{proof}
 \end{frame}
