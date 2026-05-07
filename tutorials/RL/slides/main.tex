@@ -309,15 +309,16 @@
     \end{proof}
 \end{frame}
 
-\begin{frame}{Iterative property}
-    \begin{block}{Iterative property}
+\begin{frame}{Iterative Property}
+    \begin{lemma}[Iterative Property]\label{lemma:iterative-property}
         Value function 和 Q function 存在如下递推关系
         \begin{align}
             V^\pi(s_t) &= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}[r_t + \gamma V^\pi(s_{t+1})\mid s_t] \label{eq:value-function-iterative-property}\\
             Q^\pi(s_t,a_t) &= \mathbb{E}_{(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t),\ a_{t+1}\sim \pi(\cdot\mid s_{t+1})}[r_t + \gamma Q^\pi(s_{t+1},a_{t+1})\mid s_t,a_t]
         \end{align}
-    \end{block}
+    \end{lemma}
     \begin{proof}
+        \small
         对于 value function, 我们有
         \begin{align}
             V^{\pi}(s_t) &= \mathbb{E}^{\pi}[r_t+\gamma G_{t+1}\mid s_t]\\
@@ -325,12 +326,15 @@
             &= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t + \gamma \mathbb{E}^\pi[G_{t+1}\mid s_{t+1}]\mid s_t\right]\\
             &= \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t + \gamma V^\pi[s_{t+1}]\mid s_t\right]
         \end{align}
-        这里用到了 Law of Total Expectation (Frame~\ref{law-of-total-expectation})，Q function 的证明类似，我们这里略过。
+        这里用到了 Law of Total Expectation (Frame~\ref{law-of-total-expectation}), Q function 的证明类似，我们这里略过。
     \end{proof}
 \end{frame}
 
 
 \begin{frame}{Bellman Equation Theorem (Value function)}
+    \begin{block}{}
+    前面我们介绍了value function的迭代性质，接下来我们证明满足迭代性质的函数是唯一的。
+    \end{block}
     \begin{theorem}[Bellman Equation]
         令 $\pi$ 为一个策略，假设 $\gamma\in(0,1)$, $|\mathcal{S}|<\infty$ 以及 $|r|\leq R<\infty, \mathrm{a.s.}$\footnote{$\mathrm{a.s.}$ 表示 almost surely}. 
         那么 $\pi$ 对应的 value function $V^\pi:\mathcal{S}\to\mathbb{R}$ 存在，且满足 Bellman equation:
@@ -361,7 +365,7 @@
 
 
 \begin{frame}{Fixed Point Theorem*}
-    \begin{theorem}[Fixed Point Theorem]
+    \begin{theorem}[Fixed Point Theorem]\label{theorem:fixed-point-theorem}
         给定函数 $f:\mathbb{R}^n\to\mathbb{R}^n$, 如果 $f$ 是一个 contraction mapping, 则 $f$ 具有如下性质
         \begin{enumerate}
             \item Existence: 存在 fixed point $x^*\in\mathbb{R}^n$ 满足 $f(x^*)=x^*$.
@@ -376,38 +380,26 @@
 
 
 \begin{frame}{Bellman Equation Theorem--Proof}
-    \begin{proof}
-    对于 $V^\pi(s)$, 我们有
-    \begin{align}
-    V^\pi(s_t)&= \mathbb{E}^{\pi}\left[r_t+\gamma G_{t+1}\mid s_t\right]\\
-    &=\mathbb{E}_{a_t\sim\pi(\cdot\mid s_t), (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[\mathbb{E}^\pi\left[r_t+\gamma G_{t+1}\mid s_t,a_t,r_t,s_{t+1}\right]\right]\\
-    &= \mathbb{E}_{a_t\sim\pi(\cdot\mid s_t), (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma\mathbb{E}^\pi\left[ G_{t+1}\mid s_{t+1}\right]\right]\\
-    &= \mathbb{E}_{a_t\sim\pi(\cdot\mid s_t), (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V^{\pi}(s_{t+1})\right]
-    \end{align}
-    \end{proof}
-\end{frame}
-
-\begin{frame}{Bellman Equation Theorem--Proof}
     \small
     \begin{proof}
-        由 \eqref{eq:value-function-iterative-property} 我们可以得到 value function 的等式成立。
+        由 Lemma~\ref{lemma:iterative-property} 我们知道value function 满足 Bellman equation.
         我们再证明方程解的唯一性，假设存在函数 $V:\mathcal{S}\to\mathbb{R}$ 满足 Bellman equation. 我们定义 Bellman 算子 $\mathcal{T}^\pi$ 为
         \begin{equation}
-        (\mathcal{T}^\pi V)(s_t) := \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V(s_{t+1})\mid s_t\right]
+        (\mathcal{T}^\pi V)(s_t) := \mathbb{E}_{a_t\sim \pi(\cdot\mid s_t),\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V(s_{t+1})\mid s_t\right].
         \end{equation}
 
         我们证明该算子是一个 contraction mapping, 考虑范数 $\|V\|_\infty = \max_{s\in\mathcal{S}} |V(s)|$, 我们有
         \begin{align}
         \left|(\mathcal{T}^\pi V_1)(s_t)-(\mathcal{T}^\pi V_2)(s_t)\right| &= \left|\mathbb{E}_{a_t\sim\pi(\cdot\mid s_t), (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[\gamma V_1^{\pi}(s_{t+1})-\gamma V_2^{\pi}(s_{t+1})\right]\right|\\
         &\leq \gamma \mathbb{E}_{a_t\sim\pi(\cdot\mid s_t), (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left|V_1^{\pi}(s_{t+1})-V_2^{\pi}(s_{t+1})\right|\\
-        &\leq \gamma \max_{s\in\mathcal{S}}\left|V_1(s)-V_2(s)\right|= \gamma \left\|V_1-V_2\right\|_\infty
+        &\leq \gamma \max_{s\in\mathcal{S}}\left|V_1(s)-V_2(s)\right|= \gamma \left\|V_1-V_2\right\|_\infty.
         \end{align}
         上式对于任意 $s_t\in\mathcal{S}$ 都成立，因此
         \begin{equation}
-        \left\|\mathcal{T}^\pi V_1-\mathcal{T}^\pi V_2\right\|_\infty \leq \gamma \left\|V_1-V_2\right\|_\infty
+        \left\|\mathcal{T}^\pi V_1-\mathcal{T}^\pi V_2\right\|_\infty \leq \gamma \left\|V_1-V_2\right\|_\infty.
         \end{equation}
         由于 $\gamma < 1$, 从而 $\mathcal{T}^\pi$ 是一个 contraction mapping.
-        根据不动点定理，已知 $V^\pi$ 是一个不动点，而不动点唯一，因此我们有 $V=V^\pi$.
+        根据不动点定理~\ref{theorem:fixed-point-theorem}，已知 $V^\pi$ 是一个不动点，而不动点唯一，因此我们有 $V=V^\pi$.
     \end{proof}
 \end{frame}
 
@@ -421,23 +413,21 @@
         反之，如果存在函数 $Q:\mathcal{S}\times\mathcal{A}\to\mathbb{R}$ 满足 Bellman equation, 则 $Q=Q^\pi$.
     \end{theorem}
     \begin{proof}
-        证明与 value function 的证明基本类似，我们这里略过。
+        证明与 value function 的证明类似，我们这里略过。
     \end{proof}
 \end{frame}
 
 \begin{frame}{Optimal Policy}
     \begin{definition}[Optimal Policy]
         如果策略 $\pi^*$ 满足
-
         \begin{equation}
             V^{\pi^*}(s_t)\geq V^{\pi}(s_t), \forall s_t\in\mathcal{S}, \forall \pi
         \end{equation}
-
         则我们称策略 $\pi^*$ 是 \textbf{optimal policy}. 
         对应的 $V^{\pi^*}$ 和 $Q^{\pi^*}$ 分别称之为 \textbf{optimal value function} 以及 \textbf{optimal Q-function}, 我们简记为 $V^*=V^{\pi^*}$, $Q^*=Q^{\pi^*}$.
     \end{definition}
     \begin{block}{Remark}
-        注意 optimal policy 与状态 $s$ 无关，并且 optimal policy 是不唯一的，但是所有的 optimal policy 对应的 optimal value function 是同一个。
+        注意 optimal policy 与状态 $s$ 无关，并且 optimal policy 是不唯一的，后文会证明所有的 optimal policy 对应的 optimal value function 是同一个。
     \end{block}
 \end{frame}
 
@@ -473,6 +463,7 @@
     \end{equation}
 
     反之，如果存在函数 $V:\mathcal{S}\to\mathbb{R}$ 满足 Bellman optimality equation, 则 $V=V^*$.
+
     最后，我们可以给出一个 optimal deterministic policy:
     \begin{equation}
         \pi^*(s_t) = \arg\max_{a\in\mathcal{A}}\mathbb{E}_{\ (r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)}\left[r_t+\gamma V^*(s_{t+1})\mid s_t, a_t\right]=\arg\max_{a\in\mathcal{A}} Q^*(s_t,a)
@@ -495,19 +486,22 @@
 
     \begin{proof}
         首先，我们有
-        \begin{align*}
+        \begin{equation}
+            \begin{aligned}
             \mathcal{T}^{\pi} V(s_t) &= \mathbb{E}_{a_t \sim \pi(\cdot \mid s_t), (r_t, s_{t+1}) \sim p(\cdot \mid s_t, a_t)} [r_t + \gamma V(s_{t+1})] 
             \leq \mathbb{E}_{a_t \sim \pi(\cdot \mid s_t)} \left[ \max_{a \in \mathcal{A}} \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a)} [r_t + \gamma V(s_{t+1})] \right] \\
             &= \max_{a \in \mathcal{A}} \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a)} [r_t + \gamma V(s_{t+1})] 
             = \mathcal{T}^* V(s_t)
-        \end{align*}
+            \end{aligned}
+        \end{equation}
         其次，假设 $U(s) \leq V(s)$ 对所有 $s$ 成立。令 $a^* \in \arg\max_{a} \mathbb{E} [r_t + \gamma U(s_{t+1}) \mid s_t, a]$，那么：
-        \begin{align*}
-            \mathcal{T}^* U(s_t) &= \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a^*)} [r_t + \gamma U(s_{t+1})] 
-            \leq \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a^*)} [r_t + \gamma V(s_{t+1})] \\
-            &\leq \max_{a \in \mathcal{A}} \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a)} [r_t + \gamma V(s_{t+1})] 
-            = \mathcal{T}^* V(s_t)
-        \end{align*}
+        \begin{equation}
+            \begin{aligned}
+                \mathcal{T}^* U(s_t) &= \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a^*)} [r_t + \gamma U(s_{t+1})] 
+                \leq \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a^*)} [r_t + \gamma V(s_{t+1})] \\
+                &\leq \max_{a \in \mathcal{A}} \mathbb{E}_{(r_t, s_{t+1}) \sim p(\cdot \mid s_t, a)} [r_t + \gamma V(s_{t+1})] = \mathcal{T}^* V(s_t)
+            \end{aligned}
+        \end{equation}
         证毕。
     \end{proof}
 
@@ -555,16 +549,13 @@
         \end{align}
         即 $V^*=V^{\pi^*}$, 这里第四个等式使用了 Law of Total Expectation~\ref{law-of-total-expectation}. 现在我们证明 $\pi^*$ 是最优策略，令 $\pi$ 为任意一个策略，我们有
         \begin{equation}
-        V^\pi
-        \overset{\text{Lemma~\ref{lemma:bellman-optimality-equation-theorem-proof-1}}}{\le}
-        \leq V^*
-        \overset{\text{BOE}}{=}  \mathcal{T}^*(V^\pi)
+        V^\pi=\mathcal{T}^{\pi}V \overset{\text{Lemma~\ref{lemma:bellman-optimality-equation-theorem-proof-1}}}{\le} \mathcal{T}^*V
         \overset{V^\pi\leq \mathcal{T}^*(V^\pi)}{\leq}(\mathcal{T}^*)^2(V^\pi)
         \leq \cdots
         \leq (\mathcal{T}^*)^k(V^\pi)
-        \xrightarrow[k\to\infty]{\text{fixed-point / contraction}} V^*
-        = V^{\pi^*}.
+        \xrightarrow[k\to\infty]{\text{fixed-point / contraction}} V^*.
         \end{equation}
+        即 $V^\pi\leq V^*$, 由于 $V^\pi$ 是任意的，我们有 $V^*=V^{\pi^*}$.
     \end{proof}
 \end{frame}
 
@@ -663,50 +654,51 @@
     我们可以利用 Monte Carlo (MC) 方法来进行估计，即从 $s_0=s$ 出发，独立随机采样 $N$ 条轨迹
 
     \begin{equation}
-        \{s_0^{(i)}, a_0^{(i)},r_0^{(i)},\dots,a_{T-1}^{(i)},r_{T-1}^{(i)}, s^{(i)}_{T}\}, i=1,\dots,N
+        \{\tau^{(i)}=(s_0^{(i)}, a_0^{(i)},r_0^{(i)},\dots,a_{T-1}^{(i)},r_{T-1}^{(i)}, s^{(i)}_{T})\}, i=1,\dots,N
     \end{equation}
     然后我们使用样本平均来近似期望
     \begin{equation}
         V^\pi(s) = \mathbb{E}^\pi\left[R(\tau)\mid s_0\right]\approx \frac{1}{N}\sum_{i=1}^NR(\tau^{(i)})
     \end{equation}
-    这样，我们就得到了一个 Monte Carlo estimator 来估计 $V^\pi(s)$.
+    这样，我们就得到了一个 $V^\pi(s)$ 的 Monte Carlo estimator.
     如果 $\mathcal{S}$ 比较小，我们可以遍历 $s\in\mathcal{S}$ 来估计 $V^\pi$. 但是，如果 $\mathcal{S}$ 比较大，这种方法的计算复杂度较高。
 
 \end{frame}
 
 
 \begin{frame}{Objective of Value based methods}
-    为了解决状态空间较大或者连续时，直接使用MC方法计算复杂度较高的问题，我们可以使用函数逼近的方法来近似 $V^\pi$.
+    当状态空间较大或者连续时，我们可以使用函数逼近的方法来近似 $V^\pi$.
 
-    具体做法就是，我们需要使用神经网络 $V_\phi$ 来近似 $V^\pi$,
+    具体做法就是，我们使用函数 $V_\phi$ 来近似 $V^\pi$, 这里 $\phi$ 是函数的参数，我们使用 least square error 来作为损失函数
     \begin{equation}\label{eq:value-based-methods-objective}
-        \min_{\phi} \mathcal{L}(\phi) =\mathbb{E}\left[\frac12\left(V_\phi(s_t)-V^\pi(s_t)\right)^2\right]
+        \min_{\phi} \mathcal{L}(\phi) =\mathbb{E}\left[\frac12\left(V_\phi(s_0)-V^\pi(s_0)\right)^2\right]
     \end{equation}
-    然后我们可以使用随机梯度下降法来更新参数 $\phi$.
+    然后我们可以使用不同的优化方法来更新参数 $\phi$.
 
     \footnotetext{这里关于$s$的概率分布需要进一步讨论，请参考 <强化学习的数学原理>}
 \end{frame}
 
 \begin{frame}{Gradient Calculation}
-    对上面的目标函数~\eqref{eq:value-based-methods-objective}求导得到
+    对目标函数~\eqref{eq:value-based-methods-objective} 求导得到
     \begin{align}
-    \nabla_\phi \mathcal{L}(\phi) &= \mathbb{E}\left[\left(V_\phi(s_t)-V^\pi(s_t)\right)\nabla_\phi V_\phi(s_t)\right]\\
-    &= \mathbb{E}\left[\left(V_\phi(s_t)- \mathbb{E}^\pi\left[G_t\mid s_t\right]\right)\nabla_\phi V_\phi(s_t)\right]\\
-    &=\mathbb{E}\left[\mathbb{E}^\pi\left[\left(V_\phi(s_t)- G_t\right)\nabla_\phi V_\phi(s_t)\mid s_t\right]\right]\\
-    &= \mathbb{E}^\pi\left[\left(V_\phi(s_t)- G_t\right)\nabla_\phi V_\phi(s)\mid s_t\right]
+    \nabla_\phi \mathcal{L}(\phi) &= \mathbb{E}\left[\left(V_\phi(s_0)-V^\pi(s_0)\right)\nabla_\phi V_\phi(s_0)\right]\\
+    &= \mathbb{E}\left[\left(V_\phi(s_0)- \mathbb{E}^\pi\left[G_0\mid s_0\right]\right)\nabla_\phi V_\phi(s_0)\right]\\
+    &=\mathbb{E}\left[\mathbb{E}^\pi\left[\left(V_\phi(s_0)- G_0\right)\nabla_\phi V_\phi(s_0)\mid s_0\right]\right]\\
+    &= \mathbb{E}^\pi\left[\left(V_\phi(s_0)- G_0\right)\nabla_\phi V_\phi(s_0)\mid s_0\right]
     \end{align}
-    我们现在可以使用MC方法来估计梯度，即
+    我们现在可以使用 MC 方法来估计梯度，即
     \begin{equation}
         \nabla_\phi \mathcal{L}(\phi) \approx g:=\frac{1}{N}\sum_{i=1}^N\left(V_\phi(s^{(i)})- R(\tau^{(i)})\right)\nabla_\phi V_\phi(s^{(i)})
     \end{equation}
 \end{frame}
 
 \begin{frame}{MC and SGD}
+    基于 MC 方法，我们可以得到如下的算法
     \begin{algorithm}[H]
         \caption{Value function approximation with MC}
         \While{not converged}{
             $s_0\sim p_0$, $t=0$\;
-            \While{$s_t\neq \text{terminal}$}{
+            \While{$s_t\neq \text{<term>}$}{
                 $a_t\sim \pi(\cdot\mid s_t)$\;
                 $(r_t,s_{t+1})\sim p(\cdot,\cdot\mid s_t,a_t)$\;
                 $t\gets t+1$\;
@@ -737,41 +729,46 @@
     \begin{equation}
         V^\pi(s_t) =\mathbb{E}^\pi[r_t + \gamma V^\pi(s_{t+1})\mid s_t]
     \end{equation}
-    我们将
-    \begin{equation}
-        \overline{V}_t = r_t + \gamma V^\pi(s_{t+1})
-    \end{equation}
-    称为 TD target. 将
-    \begin{equation}
-        \delta_t = V^\pi(s_t) - \left(r_t + \gamma V^\pi(s_{t+1})\right)
-    \end{equation}
-    称为 TD error. 
 
+    \begin{definition}[TD target]
+        我们将
+        \begin{equation}
+            \overline{V}_t = r_t + \gamma V^\pi(s_{t+1})
+        \end{equation}
+       称为 \textbf{TD target}. 
+    \end{definition}
+    \begin{definition}[TD error]
+        我们将
+        \begin{equation}
+            \delta_t = V^\pi(s_t) - \left(r_t + \gamma V^\pi(s_{t+1})\right)
+        \end{equation}
+       称为 \textbf{TD error}. 
+    \end{definition}
 \end{frame}
 
 \begin{frame}{Temporal Difference Learning}
     当 $\mathcal{S}$ 比较大或者连续时，我们构造损失函数
     \begin{equation}
-    \min_{\phi} \mathcal{L}(\phi) =\mathbb{E}\left[\frac12\left(V_\phi(s)-V^\pi(s)\right)^2\right]=\mathbb{E}\left[\left(V_\phi(s)- r_0-\gamma V^\pi(s_1)\right)^2\right]
+    \min_{\phi} \mathcal{L}(\phi) =\mathbb{E}\left[\frac12\left(V_\phi(s_0)-V^\pi(s_0)\right)^2\right]=\mathbb{E}\left[\left(V_\phi(s_0)- r_0-\gamma V^\pi(s_1)\right)^2\right]
     \end{equation}
     对应的梯度为
     \begin{equation}
-    \nabla_\phi \mathcal{L}(\phi) =\mathbb{E}\left[\left(V_\phi(s)- r_0-\gamma \boxed{V^\pi(s_1)}\right)\nabla_\phi V_\phi(s)\mid s_0=s\right]
+    \nabla_\phi \mathcal{L}(\phi) =\mathbb{E}\left[\left(V_\phi(s_0)- r_0-\gamma \boxed{V^\pi(s_1)}\right)\nabla_\phi V_\phi(s_0)\mid s_0\right]
     \end{equation}
     令
     \begin{equation}
-    g := \left(V_\phi(s)- r_0-\gamma \boxed{V^\pi(s_1)}\right)\nabla_\phi V_\phi(s)
+    g := \left(V_\phi(s_0)- r_0-\gamma \boxed{V^\pi(s_1)}\right)\nabla_\phi V_\phi(s_0)
     \end{equation}
-    但是，这里存在的问题在于，我们使用了 $V^\pi(s_1)$, 而这个值是未知的，因此，一个做法是使用当前的 value function $V_\phi$ 来进行代替，即
+    可以看到，这里我们使用了 $V^\pi(s_1)$, 而这个值是未知的，因此，一个做法是使用当前的 value function $V_\phi$ 来进行代替，也就是
     \begin{equation}
-    \nabla_\phi \mathcal{L}(\phi) \approx \mathbb{E}\left[\left(V_\phi(s)- r_0-\gamma V_\phi(s_1)\right)\nabla_\phi V_\phi(s)\mid s_0=s\right]
+    \nabla_\phi \mathcal{L}(\phi) \approx \mathbb{E}\left[\left(V_\phi(s)- r_0-\gamma V_\phi(s_1)\right)\nabla_\phi V_\phi(s)\mid s_0\right]
     \end{equation}
 \end{frame}
 
 \begin{frame}{Temporal Difference Learning--Naive version}
     这样，我们结合 TD 和 GSD 的算法就变成了
 
-    \begin{algorithm}[H]
+    \begin{algorithm}[H]\label{algo:td-learning-naive-version}
         \caption{Value function approximation with TD (not correct)}
         \While{not converged}{
             $s_0\sim p_0$, $a_0\sim\pi(\cdot\mid s_0)$, $(r_0,s_1)\sim p(\cdot, \cdot\mid s_0,a_0)$\;
@@ -789,7 +786,7 @@
 \end{frame}
 
 \begin{frame}[fragile]{Temporal Difference Learning--Analysis}
-    接下来，我们需要关注如何计算 $g$,  直接通过 $g=\left(V_\phi(s)- r_0-\gamma V_\phi(s_1)\right)\nabla_\phi V_\phi(s)$ 来进行计算，这在数学上是没有问题的，但是从自动微分的角度不对，比如 Pytorch 对应的实现应该是
+    尽管算法~\ref{algo:td-learning-naive-version} 在数学上是正确的，但是从自动微分的角度来看，是不正确的，比如 Pytorch 对应的实现应该是
 
     \begin{lstlisting}[language=python]
     pred = V_phi(s0)
@@ -801,10 +798,9 @@
     
     可以看到，我们实际上求的梯度是
     \begin{equation}
-        \nabla_\phi\left[\frac12\left(V_\phi(s)-(r+\gamma V_\phi(s'))\right)^2\right]=(V_\phi(s)-(r+\gamma V_\phi(s'))(\nabla_\phi V_\phi(s)-\nabla_\phi V_\phi(s'))
+        \nabla_\phi\left[\frac12\left(V_\phi(s_0)-(r_0+\gamma V_\phi(s_1))\right)^2\right]=(V_\phi(s_0)-(r_0+\gamma V_\phi(s_1))(\nabla_\phi V_\phi(s_0)-\nabla_\phi V_\phi(s_1))
     \end{equation}
-    
-    这显然与 $g$ 不相等
+    这显然与 $g$ 不相等。
 \end{frame}
 
 \begin{frame}[fragile]{Temporal Difference Learning--Analysis}
